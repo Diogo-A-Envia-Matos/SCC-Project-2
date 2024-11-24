@@ -9,11 +9,13 @@ import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
+import jakarta.ws.rs.NotAuthorizedException;
 import jakarta.ws.rs.core.Response;
 import tukano.api.Blobs;
 import tukano.api.Result;
 import tukano.api.User;
 import tukano.api.Users;
+import utils.Authentication;
 import utils.DB;
 import utils.DBCosmos;
 // import utils.DBHibernate;
@@ -62,6 +64,8 @@ public class JavaNoSQLUsers implements Users {
 		//TODO: Use utils.authentiaction to create cookie.
 		
 		// return validatedUserOrError( database.getOne( userId, userId, User.class), pwd);
+
+		return errorOrResult( validatedUserOrError(database.getOne( userId, userId, User.class), pwd), user -> createCookie(user));
 	}
 
 	@Override
@@ -123,5 +127,14 @@ public class JavaNoSQLUsers implements Users {
 	
 	private boolean badUpdateUserInfo( String userId, String pwd, User info) {
 		return (userId == null || pwd == null || info.getId() != null && ! userId.equals( info.getId()));
+	}
+
+	private Result<Response> createCookie(User user) {
+		try {
+			var resp = Authentication.login(user);
+			return ok(resp);
+		} catch (NotAuthorizedException e) {
+			return error(INTERNAL_ERROR);
+		}
 	}
 }

@@ -1,4 +1,4 @@
-package tukano.impl.rest.auth;
+package utils.auth;
 
 import java.util.Map;
 

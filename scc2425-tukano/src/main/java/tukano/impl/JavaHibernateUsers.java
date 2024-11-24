@@ -10,8 +10,10 @@ import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
+import jakarta.ws.rs.NotAuthorizedException;
 import jakarta.ws.rs.core.NewCookie;
 import jakarta.ws.rs.core.Response;
+import main.java.utils.Authentication;
 import tukano.api.Blobs;
 import tukano.api.Result;
 import tukano.api.User;
@@ -62,22 +64,15 @@ public class JavaHibernateUsers implements Users {
 
 		if (userId == null)
 			return error(BAD_REQUEST);
-
-		//TODO: Use utils.authentiaction to create cookie.
-
-		// String uid = UUID.randomUUID().toString();
-		// var cookie = new NewCookie.Builder(COOKIE_KEY)
-		// 		.value(uid).path("/")
-		// 		.comment("sessionid")
-		// 		.maxAge(MAX_COOKIE_AGE)
-		// 		.secure(false) //ideally it should be true to only work for https requests
-		// 		.httpOnly(true)
-		// 		.build();
-
-		// RedisCache.putSession( new Session( uid, userId));	
-		
+			
 		// return validatedUserOrError( database.getOne( userId, userId, User.class), pwd);
-		// return Response.cookie(cookie).json
+
+		// var validUser = validatedUserOrError( database.getOne( userId, userId, User.class), pwd);
+		// if (!validUser.isOK()) {
+		// 	return validUser;
+		// }
+
+		return errorOrResult( validatedUserOrError(database.getOne( userId, userId, User.class), pwd), user -> createCookie(user));
 	}
 
 	@Override
@@ -139,5 +134,14 @@ public class JavaHibernateUsers implements Users {
 	
 	private boolean badUpdateUserInfo( String userId, String pwd, User info) {
 		return (userId == null || pwd == null || info.getId() != null && ! userId.equals( info.getId()));
+	}
+
+	private Result<Response> createCookie(User user) {
+		try {
+			var resp = Authentication.login(user);
+			return ok(resp);
+		} catch (NotAuthorizedException e) {
+			return error(INTERNAL_ERROR);
+		}
 	}
 }

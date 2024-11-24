@@ -1,5 +1,6 @@
 package utils;
 
+import com.azure.cosmos.CosmosException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import exceptions.InvalidClassException;
@@ -7,20 +8,16 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 import tukano.api.Blobs;
+import tukano.api.Result;
+import tukano.api.Result.ErrorCode;
 import tukano.api.Short;
 import tukano.api.User;
 import tukano.impl.data.Following;
 import tukano.impl.data.Likes;
 import utils.Props;
 
-//TODO: Finish this file
-//TODO: Implement interface
 public class RedisCache {
     
-    // Have to make the calls to DBCosmos search this cache first before checking the database
-
-    // TODO: Choose wether to use write-through or write-back
-
     private static final String RedisHostname = Props.get("REDIS_URL", "");
 	private static final String RedisKey = Props.get("REDIS_KEY", "");
 	private static final int REDIS_PORT = 6380;
@@ -28,6 +25,13 @@ public class RedisCache {
 	private static final boolean Redis_USE_TLS = true;
 	
 	private static JedisPool instance;
+
+	private static RedisCache redisInstance;
+	synchronized public static RedisCache getInstance() {
+		if(redisInstance == null )
+			redisInstance = new RedisCache();
+		return redisInstance;
+	}
 	
 	public synchronized static JedisPool getCachePool() {
 		if( instance != null)
@@ -47,14 +51,23 @@ public class RedisCache {
 	}
 
 	
-	public synchronized static void putSession(Session s) {
+	public void putSession(Session s) {
 		try (var jedis = getCachePool().getResource()) {
 			jedis.set(s.uid(), s.user());
+		} catch( CosmosException ce ) {
+			ce.printStackTrace();
+		} catch( Exception x ) {
+			x.printStackTrace();
 		}
 	}
 	
-	public synchronized static Session getSession(String uid) {
-		return sessions.get(uid);
+	public Session getSession(String uid) {
+		try (var jedis = getCachePool().getResource()) {
+			return new Session(uid, jedis.get(uid));
+		} catch( Exception x ) {
+			x.printStackTrace();
+			return null;
+		}
 	}
 
 }

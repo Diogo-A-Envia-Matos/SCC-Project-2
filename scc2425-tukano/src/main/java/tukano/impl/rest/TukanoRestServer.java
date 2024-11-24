@@ -10,10 +10,9 @@ import tukano.impl.Token;
 import utils.Authentication;
 import utils.IP;
 import utils.Props;
-
-import tukano.impl.rest.auth.RequestCookies;
-import tukano.impl.rest.auth.RequestCookiesCleanupFilter;
-import tukano.impl.rest.auth.RequestCookiesFilter;
+import utils.auth.RequestCookies;
+import utils.auth.RequestCookiesCleanupFilter;
+import utils.auth.RequestCookiesFilter;
 
 public class TukanoRestServer extends Application {
 
