@@ -212,8 +212,18 @@ public class JavaNoSQLShorts implements Shorts {
 		return Result.ok();
 	}
 
+	//TODO: Test if this is valid
 	protected Result<User> okUser( String userId, String pwd) {
-		return JavaNoSQLUsers.getInstance().getUser(userId, pwd);
+		return errorOrResult( JavaNoSQLUsers.getInstance().getUser(userId, pwd), resp -> {
+			return ok((User)resp.getEntity());
+		});
+		// var res = JavaNoSQLUsers.getInstance().getUser(userId, pwd);
+		// if (!res.isOK()) {
+		// 	error(res.error());
+		// } else {
+		// 	var resp = res.value();
+		// 	return ok((User)resp.getEntity());
+		// }
 	}
 
 	private Result<Void> okUser( String userId ) {
