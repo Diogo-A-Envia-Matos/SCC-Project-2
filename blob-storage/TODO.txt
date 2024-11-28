@@ -1,0 +1,1 @@
+Colocar todos os ficheiros relacionados com blobs nesta pasta.

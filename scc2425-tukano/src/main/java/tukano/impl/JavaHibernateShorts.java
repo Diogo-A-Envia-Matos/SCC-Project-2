@@ -158,7 +158,9 @@ public class JavaHibernateShorts implements Shorts {
 	}
 		
 	protected Result<User> okUser( String userId, String pwd) {
-		return JavaHibernateUsers.getInstance().getUser(userId, pwd);
+		return errorOrResult( JavaHibernateUsers.getInstance().getUser(userId, pwd), resp -> {
+			return ok((User)resp.getEntity());
+		});
 	}
 	
 	private Result<Void> okUser( String userId ) {
