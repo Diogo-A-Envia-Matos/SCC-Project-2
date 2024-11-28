@@ -16,7 +16,7 @@ spec:
         "kubernetes.io/os": linux
       containers:
       - name: blob-image
-        image: #TODO: Create image and upload to DockerHub
+        image: #TODO: Create blob image and upload to DockerHub
         ports:
         - containerPort: 8080
         env:
@@ -34,28 +34,28 @@ spec:
         startupProbe:
           httpGet:
             path: /health
-            port: 3000
+            port: 8080
           failureThreshold: 5
           initialDelaySeconds: 20
           periodSeconds: 10
         readinessProbe:
           httpGet:
             path: /health
-            port: 3000
+            port: 8080
           failureThreshold: 3
           initialDelaySeconds: 3
           periodSeconds: 5
         livenessProbe:
           httpGet:
             path: /health
-            port: 3000
+            port: 8080
           failureThreshold: 5
           initialDelaySeconds: 3
           periodSeconds: 3
       initContainers:
-      - name: wait-for-rabbitmq
+      - name: wait-for-postgres
         image: busybox
-        command: ['sh', '-c', 'until nc -zv rabbitmq 5672; do echo waiting for rabbitmq; sleep 2; done;']
+        command: ['sh', '-c', 'until nc -zv postgres-image 8080; do echo waiting for postgres-image; sleep 2; done;']
         resources:
           requests:
             cpu: 1m

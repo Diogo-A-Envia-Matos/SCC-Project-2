@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-image
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-image
+  template:
+    metadata:
+      labels:
+        app: postgres-image
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": linux
+      containers:
+      - name: postgres-image
+        image: postgres
+        ports:
+        - containerPort: 8080 #TODO: Alterar port para o esperado pelo Postgres
+        resources:
+          requests:
+            cpu: 1m
+            memory: 50Mi
+          limits:
+            cpu: 75m
+            memory: 128Mi
+        startupProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          failureThreshold: 5
+          initialDelaySeconds: 20
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          failureThreshold: 3
+          initialDelaySeconds: 3
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          failureThreshold: 5
+          initialDelaySeconds: 3
+          periodSeconds: 3
