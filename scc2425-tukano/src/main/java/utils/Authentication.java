@@ -11,7 +11,6 @@ import jakarta.ws.rs.core.Response.Status;
 import tukano.api.User;
 import tukano.api.Result;
 import tukano.impl.JavaHibernateShorts;
-import tukano.impl.JavaNoSQLShorts;
 import jakarta.ws.rs.NotAuthorizedException;
 import jakarta.ws.rs.core.Cookie;
 import jakarta.ws.rs.core.NewCookie;
@@ -22,8 +21,7 @@ import utils.auth.RequestCookies;
 //TODO: Testar a autenticação
 public class Authentication {
 
-	static final DB database = Boolean.parseBoolean(Props.get("USE_SQL", "false")) ?
-			DBHibernate.getInstance() : DBCosmos.getInstance();
+	static final DB database = DBHibernate.getInstance();
 	
 	static final String PATH = "login";
 	static final String USER = "username";

@@ -1,20 +1,16 @@
 package tukano.impl.rest;
 
-import java.util.List;
-
 import jakarta.inject.Singleton;
+import java.util.List;
 import tukano.api.Short;
 import tukano.api.Shorts;
 import tukano.api.rest.RestShorts;
-import tukano.impl.JavaNoSQLShorts;
 import tukano.impl.JavaHibernateShorts;
-import utils.Props;
 
 @Singleton
 public class RestShortsResource extends RestResource implements RestShorts {
 
-	static final Shorts impl = Boolean.parseBoolean(Props.get("USE_SQL", "false")) ?
-			JavaHibernateShorts.getInstance() : JavaNoSQLShorts.getInstance();
+	static final Shorts impl = JavaHibernateShorts.getInstance();
 		
 	@Override
 	public Short createShort(String userId, String password) {
