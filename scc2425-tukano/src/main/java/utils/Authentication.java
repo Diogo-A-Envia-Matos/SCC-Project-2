@@ -1,5 +1,7 @@
 package utils;
 
+import java.util.logging.Logger;
+
 import java.net.URI;
 import java.util.UUID;
 
@@ -23,6 +25,8 @@ public class Authentication {
 
 	// static final DB database = Boolean.parseBoolean(Props.get("USE_SQL", "false")) ?
 	// 		DBHibernate.getInstance() : DBCosmos.getInstance();
+
+	private static Logger Log = Logger.getLogger(Authentication.class.getName());
 	
 	static final DB database = DBHibernate.getInstance();
 
@@ -79,7 +83,7 @@ public class Authentication {
 		if( session == null )
 			throw new NotAuthorizedException("No valid session initialized");
 			
-		if (session.user() == null || session.user().length() == 0) 
+		if (session.uid() == null || session.uid().length() == 0) 
 			throw new NotAuthorizedException("No valid session initialized");
 		
 		return session;
@@ -98,11 +102,14 @@ public class Authentication {
 		if( session == null )
 			throw new NotAuthorizedException("No valid session initialized");
 			
-		if (session.user() == null || session.user().length() == 0) 
+		if (session.uid() == null || session.uid().length() == 0) 
 			throw new NotAuthorizedException("No valid session initialized");
 		
-		if (!session.user().equals(userId))
-			throw new NotAuthorizedException("User is not Admin : " + session.user());
+		Log.info(() -> String.format("validateSession : userId = %s, Cookie = %s, Session = %s\n", userId, cookie, session));
+		Log.info(() -> String.format("validateSession : session.user = %s, userId = %s\n", session.uid(), userId));
+
+		if (!session.uid().equals(userId))
+			throw new NotAuthorizedException("User is not Admin : " + session.uid());
 		
 		return session;
 	}

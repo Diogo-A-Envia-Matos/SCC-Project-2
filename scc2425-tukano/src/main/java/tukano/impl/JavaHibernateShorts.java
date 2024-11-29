@@ -26,7 +26,7 @@ public class JavaHibernateShorts implements Shorts {
 
 	private static Shorts instance;
 
-	private static DB database; // Choose between CosmosDB or Hibernate
+	private static DBHibernate database; // Choose between CosmosDB or Hibernate
 
 	private static Blobs blobDatabase = JavaFileBlobs.getInstance();
 
@@ -75,14 +75,18 @@ public class JavaHibernateShorts implements Shorts {
 		return errorOrResult( getShort(shortId), shrt -> {
 			
 			return errorOrResult( okUser( shrt.getOwnerId(), password), user -> {
-				return ((DBHibernate) database).transaction( hibernate -> {
+				return database.transaction( hibernate -> {
 
 					hibernate.remove( shrt);
 					
 					var query = format("DELETE FROM Likes l WHERE l.shortId = '%s'", shortId);
 					hibernate.createNativeQuery( query, Likes.class).executeUpdate();
+
+					var blobUrl = shrt.getBlobUrl().split("\\?")[0];
+
+					Log.info("Before delete on blob");
 					
-					blobDatabase.delete(shrt.getBlobUrl(), Token.get() );
+					blobDatabase.delete(shrt.getId(), Token.get(blobUrl) );
 				});
 			});	
 		});
@@ -177,7 +181,7 @@ public class JavaHibernateShorts implements Shorts {
 		if( ! Token.isValid( token, userId ) )
 			return error(FORBIDDEN);
 
-		return ((DBHibernate) database).transaction( (hibernate) -> {
+		return database.transaction( (hibernate) -> {
 
 			//delete shorts
 			var query1 = format("DELETE Short s WHERE s.ownerId = '%s'", userId);

@@ -1,4 +1,4 @@
 package utils;
 
-public record Session(String uid, String user) {
+public record Session(String uid, String password) {
 }

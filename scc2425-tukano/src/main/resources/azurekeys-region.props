@@ -3,7 +3,7 @@
 COSMOSDB_KEY=qSshVRijsmNAacxY3F1R7huvtabLOdZtEShOce8j2IBiZLtMLlWrTuq5nrAp1NXVOX5qSHMXB2UhACDbRw8z2Q==
 COSMOSDB_URL=https://cosmos70252.documents.azure.com:443/
 COSMOSDB_DATABASE=cosmosdb70252-->
-REDIS_KEY=5PSjw8KrmWNclbJFlwspdcrCCscqREyEnAzCaAXT5sg=
+REDIS_KEY=AG4uNBTDkHUoTGNRUwDJNjlySulaad4fmAzCaBTsLYY=
 REDIS_URL=redis70252northeurope.redis.cache.windows.net
 USE_SQL=false
 
