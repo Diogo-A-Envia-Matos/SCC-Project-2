@@ -13,7 +13,6 @@ import java.util.logging.Logger;
 import jakarta.ws.rs.NotAuthorizedException;
 import jakarta.ws.rs.core.NewCookie;
 import jakarta.ws.rs.core.Response;
-import main.java.utils.Authentication;
 import tukano.api.Blobs;
 import tukano.api.Result;
 import tukano.api.User;
@@ -23,6 +22,7 @@ import utils.DBHibernate;
 import utils.Props;
 import utils.RedisCache;
 import utils.Session;
+import utils.Authentication;
 
 public class JavaHibernateUsers implements Users {
 
@@ -35,8 +35,7 @@ public class JavaHibernateUsers implements Users {
 
 	private static DB database; // Choose between CosmosDB or Hibernate
 	
-	private static Blobs blobDatabase = Boolean.parseBoolean(Props.get("USE_AZURE_BLOB_STORAGE", "true")) ?
-		JavaAzureBlobs.getInstance() : JavaFileBlobs.getInstance();
+	private static Blobs blobDatabase = JavaFileBlobs.getInstance();
 
 	synchronized public static Users getInstance() {
 		if( instance == null )

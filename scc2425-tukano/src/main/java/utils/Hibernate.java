@@ -14,7 +14,6 @@ import org.hibernate.exception.ConstraintViolationException;
 import tukano.api.Result;
 import tukano.api.Result.ErrorCode;
 
-//TODO: Configure this file to work with CosmosDB with PostgreSQL
 /**
  * A helper class to perform POJO (Plain Old Java Objects) persistence, using
  * Hibernate and a backing relational database.

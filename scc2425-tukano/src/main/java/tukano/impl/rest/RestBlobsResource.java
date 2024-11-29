@@ -4,7 +4,6 @@ import jakarta.inject.Singleton;
 import jakarta.ws.rs.core.Cookie;
 import tukano.api.Blobs;
 import tukano.api.rest.RestBlobs;
-import tukano.impl.JavaAzureBlobs;
 import tukano.impl.JavaFileBlobs;
 import utils.Authentication;
 import utils.Props;
@@ -16,8 +15,7 @@ public class RestBlobsResource extends RestResource implements RestBlobs {
 
 	private static final String ADMIN = "admin";
 
-	static final Blobs impl = Boolean.parseBoolean(Props.get("USE_AZURE_BLOB_STORAGE", "true")) ?
-			JavaAzureBlobs.getInstance() : JavaFileBlobs.getInstance();
+	static final Blobs impl = JavaFileBlobs.getInstance();
 
 	@Override
 	public void upload(String blobId, byte[] bytes, String token, Cookie cookie) {

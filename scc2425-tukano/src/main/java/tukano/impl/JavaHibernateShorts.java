@@ -28,8 +28,7 @@ public class JavaHibernateShorts implements Shorts {
 
 	private static DB database; // Choose between CosmosDB or Hibernate
 
-	private static Blobs blobDatabase = Boolean.parseBoolean(Props.get("USE_AZURE_BLOB_STORAGE", "true")) ?
-			JavaAzureBlobs.getInstance() : JavaFileBlobs.getInstance();
+	private static Blobs blobDatabase = JavaFileBlobs.getInstance();
 
 	synchronized public static Shorts getInstance() {
 		if( instance == null )
