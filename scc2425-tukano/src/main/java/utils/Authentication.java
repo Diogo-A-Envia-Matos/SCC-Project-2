@@ -1,32 +1,28 @@
 package utils;
 
-import java.net.URI;
-import java.util.UUID;
-
 import static tukano.api.Result.ErrorCode.*;
 import static tukano.api.Result.*;
 
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response.Status;
+import java.util.logging.Logger;
 import tukano.api.User;
 import tukano.api.Result;
-import tukano.impl.JavaHibernateShorts;
 import jakarta.ws.rs.NotAuthorizedException;
 import jakarta.ws.rs.core.Cookie;
 import jakarta.ws.rs.core.NewCookie;
 import jakarta.ws.rs.core.Response;
 
-import utils.auth.RequestCookies;
-
 //TODO: Testar a autenticação
 public class Authentication {
 
 	static final DB database = DBHibernate.getInstance();
-	
-	static final String PATH = "login";
+    private static Logger Log = Logger.getLogger(Authentication.class.getName());
+
+    static final String PATH = "login";
 	static final String USER = "username";
 	static final String PWD = "password";
-	static final String COOKIE_KEY = "scc:session";
+	public static final String COOKIE_KEY = "tukano:session";
 	static final String LOGIN_PAGE = "login.html";
 	private static final int MAX_COOKIE_AGE = 3600;
 	// static final String REDIRECT_TO_AFTER_LOGIN = "/ctrl/version";
@@ -49,8 +45,10 @@ public class Authentication {
 			
 			RedisCache.getInstance().putSession( new Session( uid, password));	
 			
-            return Response.ok()
-                    .cookie(cookie) 
+			//TODO: Add User to response
+			//TODO: Test user
+            return Response.ok(user)
+                    .cookie(cookie)
                     .build();
 		} else
 			throw new NotAuthorizedException("Incorrect login");
@@ -65,11 +63,25 @@ public class Authentication {
 		}
 	}
 	
-	static public Session validateSession(String userId) throws NotAuthorizedException {
-		var cookies = RequestCookies.get();
-		return validateSession( cookies.get(COOKIE_KEY ), userId );
+	static public Session validateSession(Cookie cookie) throws NotAuthorizedException {
+
+		if (cookie == null )
+			throw new NotAuthorizedException("No session initialized");
+
+		var session = RedisCache.getInstance().getSession( cookie.getValue());
+		if( session == null )
+			throw new NotAuthorizedException("No valid session initialized");
+
+		if (session.uid() == null || session.uid().length() == 0)
+			throw new NotAuthorizedException("No valid session initialized");
+
+		return session;
 	}
-	
+	// static public Session validateSession(String userId) throws NotAuthorizedException {
+	// 	var cookies = RequestCookies.get();
+	// 	return validateSession( cookies.get(COOKIE_KEY ), userId );
+	// }
+
 	static public Session validateSession(Cookie cookie, String userId) throws NotAuthorizedException {
 
 		if (cookie == null )
@@ -79,11 +91,14 @@ public class Authentication {
 		if( session == null )
 			throw new NotAuthorizedException("No valid session initialized");
 			
-		if (session.user() == null || session.user().length() == 0) 
+		if (session.uid() == null || session.uid().length() == 0)
 			throw new NotAuthorizedException("No valid session initialized");
 		
-		if (!session.user().equals(userId))
-			throw new NotAuthorizedException("Invalid user : " + session.user());
+		Log.info(() -> String.format("validateSession : userId = %s, Cookie = %s, Session = %s\n", userId, cookie, session));
+		Log.info(() -> String.format("validateSession : session.user = %s, userId = %s\n", session.uid(), userId));
+
+		if (!session.uid().equals(userId))
+			throw new NotAuthorizedException("User is not Admin : " + session.uid());
 		
 		return session;
 	}

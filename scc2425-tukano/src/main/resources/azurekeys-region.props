@@ -1,4 +1,5 @@
 # Date : 06/11/24, 09:35
-BlobStoreConnection=DefaultEndpointsProtocol=https;AccountName=sto70252northeurope;AccountKey=jL6c9JOV2ZaszCm2CrHk7MXx/lg2vIP6Nit2coCO6zeuxVLf5O8+qj7Z9xJp2GZQKEAkPVB1dykA+ASt1KI+EQ==;EndpointSuffix=core.windows.net
-REDIS_KEY=ReyKmHeQ3cxmglLnkso9zUhrS4SE37d9LAzCaKkzIEI=
+REDIS_KEY=AG4uNBTDkHUoTGNRUwDJNjlySulaad4fmAzCaBTsLYY=
 REDIS_URL=redis70252northeurope.redis.cache.windows.net
+USE_SQL=false
+<!-- Só é precio -->

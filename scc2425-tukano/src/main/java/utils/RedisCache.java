@@ -53,7 +53,7 @@ public class RedisCache {
 	
 	public void putSession(Session s) {
 		try (var jedis = getCachePool().getResource()) {
-			jedis.set(s.uid(), s.user());
+			jedis.set(s.uid(), s.password());
 		} catch( CosmosException ce ) {
 			ce.printStackTrace();
 		} catch( Exception x ) {
