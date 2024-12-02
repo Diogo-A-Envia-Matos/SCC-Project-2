@@ -4,25 +4,19 @@ import static java.lang.String.*;
 import static tukano.api.Result.ErrorCode.*;
 import static tukano.api.Result.*;
 
+import jakarta.ws.rs.NotAuthorizedException;
+import jakarta.ws.rs.core.Response;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.logging.Logger;
-
-import jakarta.ws.rs.NotAuthorizedException;
-import jakarta.ws.rs.core.NewCookie;
-import jakarta.ws.rs.core.Response;
 import tukano.api.Blobs;
 import tukano.api.Result;
 import tukano.api.User;
 import tukano.api.Users;
+import utils.Authentication;
 import utils.DB;
 import utils.DBHibernate;
-import utils.Props;
-import utils.RedisCache;
-import utils.Session;
-import utils.Authentication;
 
 public class JavaHibernateUsers implements Users {
 

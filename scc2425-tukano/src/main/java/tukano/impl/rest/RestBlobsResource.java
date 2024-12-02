@@ -6,7 +6,6 @@ import tukano.api.Blobs;
 import tukano.api.rest.RestBlobs;
 import tukano.impl.JavaFileBlobs;
 import utils.Authentication;
-import utils.Props;
 
 @Singleton
 public class RestBlobsResource extends RestResource implements RestBlobs {

@@ -19,7 +19,6 @@ spec:
         image: postgres
         ports:
         #TODO: Alterar port para o esperado pelo Postgres
-	# usar o 8080 necessita de uma config extra para mudar o port da imagem para 8080 (POSTGRES_PORT = 8080)
         - containerPort: 5432 # trying with 5432 default postgres port
         env:
         - name: POSTGRES_USER
@@ -56,3 +55,16 @@ spec:
           failureThreshold: 5
           initialDelaySeconds: 3
           periodSeconds: 3
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-service
+spec:
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 5432
+    targetPort: 5432
+  selector:
+    app: postgres-image

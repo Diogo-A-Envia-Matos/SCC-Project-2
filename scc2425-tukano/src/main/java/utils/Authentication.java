@@ -3,15 +3,15 @@ package utils;
 import static tukano.api.Result.ErrorCode.*;
 import static tukano.api.Result.*;
 
-import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.core.Response.Status;
-import java.util.logging.Logger;
-import tukano.api.User;
-import tukano.api.Result;
 import jakarta.ws.rs.NotAuthorizedException;
+import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Cookie;
 import jakarta.ws.rs.core.NewCookie;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
+import java.util.logging.Logger;
+import tukano.api.Result;
+import tukano.api.User;
 
 //TODO: Testar a autenticação
 public class Authentication {
@@ -19,9 +19,6 @@ public class Authentication {
 	static final DB database = DBHibernate.getInstance();
     private static Logger Log = Logger.getLogger(Authentication.class.getName());
 
-    static final String PATH = "login";
-	static final String USER = "username";
-	static final String PWD = "password";
 	public static final String COOKIE_KEY = "tukano:session";
 	static final String LOGIN_PAGE = "login.html";
 	private static final int MAX_COOKIE_AGE = 3600;

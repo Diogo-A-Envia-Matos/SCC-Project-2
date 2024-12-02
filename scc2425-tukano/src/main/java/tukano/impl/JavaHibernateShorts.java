@@ -15,9 +15,7 @@ import tukano.api.User;
 import tukano.impl.data.Following;
 import tukano.impl.data.Likes;
 import tukano.impl.rest.TukanoRestServer;
-import utils.DB;
 import utils.DBHibernate;
-import utils.Props;
 
 public class JavaHibernateShorts implements Shorts {
 

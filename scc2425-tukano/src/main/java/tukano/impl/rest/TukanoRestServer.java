@@ -1,16 +1,12 @@
 package tukano.impl.rest;
 
+import jakarta.ws.rs.core.Application;
 import java.util.HashSet;
 import java.util.Set;
-
 import java.util.logging.Logger;
-
-import jakarta.ws.rs.core.Application;
 import tukano.impl.Token;
 import utils.Authentication;
-import utils.IP;
 import utils.Props;
-import utils.auth.RequestCookies;
 import utils.auth.RequestCookiesCleanupFilter;
 import utils.auth.RequestCookiesFilter;
 
