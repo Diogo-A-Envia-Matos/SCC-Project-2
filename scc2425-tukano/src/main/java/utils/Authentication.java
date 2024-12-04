@@ -4,11 +4,9 @@ import static tukano.api.Result.ErrorCode.*;
 import static tukano.api.Result.*;
 
 import jakarta.ws.rs.NotAuthorizedException;
-import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Cookie;
 import jakarta.ws.rs.core.NewCookie;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
 import java.util.logging.Logger;
 import tukano.api.Result;
 import tukano.api.User;
@@ -20,9 +18,7 @@ public class Authentication {
     private static Logger Log = Logger.getLogger(Authentication.class.getName());
 
 	public static final String COOKIE_KEY = "tukano:session";
-	static final String LOGIN_PAGE = "login.html";
 	private static final int MAX_COOKIE_AGE = 3600;
-	// static final String REDIRECT_TO_AFTER_LOGIN = "/ctrl/version";
 
 	//TODO: Alterar pwdOK
 	//TODO: Alterar para só receber strings
@@ -30,34 +26,27 @@ public class Authentication {
 		String uid = user.getId();
 		String password = user.getPwd();
 		System.out.println("user: " + user.getId() + " pwd:" + user.getPwd() );
-		// boolean pwdOk = true; // replace with code to check user password
-		if (validateUser(user).isOK()) {
-			var cookie = new NewCookie.Builder(COOKIE_KEY)
-					.value(uid).path("/")
-					.comment("sessionid")
-					.maxAge(MAX_COOKIE_AGE)
-					.secure(false) //ideally it should be true to only work for https requests
-					.httpOnly(true)
-					.build();
-			
-			RedisCache.getInstance().putSession( new Session( uid, password));	
-			
-			//TODO: Add User to response
-			//TODO: Test user
-            return Response.ok(user)
-                    .cookie(cookie)
-                    .build();
-		} else
+
+		if (!validateUser(user).isOK()) {
+			System.out.println("User is not authorized");
 			throw new NotAuthorizedException("Incorrect login");
-	}
-	
-	static public String login() {
-		try {
-			var in = Authentication.class.getClassLoader().getResourceAsStream(LOGIN_PAGE);
-			return new String( in.readAllBytes() );			
-		} catch( Exception x ) {
-			throw new WebApplicationException( Status.INTERNAL_SERVER_ERROR );
 		}
+
+		var cookie = new NewCookie.Builder(COOKIE_KEY)
+				.value(uid).path("/")
+				.comment("sessionid")
+				.maxAge(MAX_COOKIE_AGE)
+				.secure(false) //ideally it should be true to only work for https requests
+				.httpOnly(true)
+				.build();
+
+		RedisCache.getInstance().putSession( new Session( uid, password));
+
+		//TODO: Add User to response
+		//TODO: Test user
+		return Response.ok(user)
+				.cookie(cookie)
+				.build();
 	}
 	
 	static public Session validateSession(Cookie cookie) throws NotAuthorizedException {

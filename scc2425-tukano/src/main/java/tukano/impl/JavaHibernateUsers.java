@@ -133,7 +133,7 @@ public class JavaHibernateUsers implements Users {
 		try {
 			var resp = Authentication.login(user);
 			return ok(resp);
-		} catch (NotAuthorizedException e) {
+		} catch (Exception e) {
 			return error(INTERNAL_ERROR);
 		}
 	}

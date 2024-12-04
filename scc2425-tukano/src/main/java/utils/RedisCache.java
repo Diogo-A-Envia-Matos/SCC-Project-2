@@ -18,11 +18,10 @@ import utils.Props;
 
 public class RedisCache {
     
-    private static final String RedisHostname = Props.get("REDIS_URL", "");
-	private static final String RedisKey = Props.get("REDIS_KEY", "");
-	private static final int REDIS_PORT = 6380;
+    private static final String RedisHostname = Props.get("REDIS_URL", "redis-service");
+	private static final int REDIS_PORT = 6379;
 	private static final int REDIS_TIMEOUT = 1000;
-	private static final boolean Redis_USE_TLS = true;
+	private static final boolean Redis_USE_TLS = false;
 	
 	private static JedisPool instance;
 
@@ -46,7 +45,7 @@ public class RedisCache {
 		poolConfig.setTestWhileIdle(true);
 		poolConfig.setNumTestsPerEvictionRun(3);
 		poolConfig.setBlockWhenExhausted(true);
-		instance = new JedisPool(poolConfig, RedisHostname, REDIS_PORT, REDIS_TIMEOUT, RedisKey, Redis_USE_TLS);
+		instance = new JedisPool(poolConfig, RedisHostname, REDIS_PORT, REDIS_TIMEOUT, Redis_USE_TLS);
 		return instance;
 	}
 
@@ -56,8 +55,10 @@ public class RedisCache {
 			jedis.set(s.uid(), s.password());
 		} catch( CosmosException ce ) {
 			ce.printStackTrace();
+			throw ce;
 		} catch( Exception x ) {
 			x.printStackTrace();
+			throw x;
 		}
 	}
 	
@@ -66,7 +67,7 @@ public class RedisCache {
 			return new Session(uid, jedis.get(uid));
 		} catch( Exception x ) {
 			x.printStackTrace();
-			return null;
+			throw x;
 		}
 	}
 
