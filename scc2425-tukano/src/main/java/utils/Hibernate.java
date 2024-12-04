@@ -1,16 +1,13 @@
 package utils;
 
-import java.io.File;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
-
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.exception.ConstraintViolationException;
-
 import tukano.api.Result;
 import tukano.api.Result.ErrorCode;
 
@@ -21,15 +18,12 @@ import tukano.api.Result.ErrorCode;
  * @param <Session>
  */
 public class Hibernate {
-//	private static Logger Log = Logger.getLogger(Hibernate.class.getName());
-
 	private SessionFactory sessionFactory;
 	private static Hibernate instance;
 
 	private Hibernate() {
 		try {
 			sessionFactory = new Configuration().configure().buildSessionFactory();
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

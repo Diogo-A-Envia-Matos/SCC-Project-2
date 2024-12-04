@@ -4,8 +4,10 @@ import jakarta.ws.rs.core.Application;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
+import tukano.api.rest.PodHealth;
 import tukano.impl.Token;
 import utils.Authentication;
+import utils.IP;
 import utils.Props;
 import utils.auth.RequestCookiesCleanupFilter;
 import utils.auth.RequestCookiesFilter;
@@ -16,13 +18,8 @@ public class TukanoRestServer extends Application {
 
 	private static final String TOKEN_SECRET = "Token_secret";
 
-	// https://tukano-1730835561603.azurewebsites.net
-	static final String INETADDR_ANY = "0.0.0.0";
-	// static String SERVER_BASE_URI = "http://%s/tukano-1/rest";
-	static String SERVER_BASE_URI = "http://%s:%s/tukano-1/rest";
-	static String HOST_NAME = "127.0.0.1";
-	// static String HOST_NAME = "tukano-1730835561603.azurewebsites.net";
-
+	static String SERVER_BASE_URI = "http://%s:%s/tukano/rest";
+	static String HOST_NAME = IP.hostAddress();
 	public static final int PORT = 8080;
 
 	public static String serverURI;
@@ -37,11 +34,13 @@ public class TukanoRestServer extends Application {
 	public TukanoRestServer() {
 		Token.setSecret(TOKEN_SECRET);
 
-		// had to hard code - ip.hostname() gave wrong host
 		Props.load("azurekeys-region.props"); //place the props file in resources folder under java/main
 
-		// serverURI = String.format(SERVER_BASE_URI, IP.hostname());
 		serverURI = String.format(SERVER_BASE_URI, HOST_NAME, PORT);
+		System.out.println("----------------------------------serverURI: " + serverURI);
+
+		resources.add(PodHealth.class);
+
 		resources.add(RestBlobsResource.class);
 		resources.add(RestUsersResource.class);
 		resources.add(RestShortsResource.class);

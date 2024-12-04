@@ -11,6 +11,7 @@
 	</properties>
 	<build>
 		<sourceDirectory>src</sourceDirectory>
+		<finalName>tukano</finalName>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -34,7 +35,7 @@
 						<url>http://maven:s3cret@127.0.0.1:8080/manager/text</url>
 						<server>tomcat-docker</server>
 						<update>true</update>
-						<path>/tukano-1</path>
+						<path>/tukano</path>
 						<username>maven</username>
 						<password>s3cret</password>
 					</configuration>
@@ -63,9 +64,9 @@
 					</images>
 				</configuration>
 			</plugin>
-			<plugin> 
+			<plugin>
 				<groupId>com.microsoft.azure</groupId>
-				<artifactId>azure-webapp-maven-plugin</artifactId>  
+				<artifactId>azure-webapp-maven-plugin</artifactId>
 				<version>2.13.0</version>
 			    <configuration>
 			        <schemaVersion>v2</schemaVersion>
