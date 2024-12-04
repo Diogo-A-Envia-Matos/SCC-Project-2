@@ -74,15 +74,18 @@ public class JavaHibernateShorts implements Shorts {
 			return errorOrResult( okUser( shrt.getOwnerId(), password), user -> {
 				return database.transaction( hibernate -> {
 
-					hibernate.remove( shrt);
+					// hibernate.remove( shrt);
+					database.deleteOne(shrt);
 					
-					var query = format("DELETE FROM Likes l WHERE l.shortId = '%s'", shortId);
-					hibernate.createNativeQuery( query, Likes.class).executeUpdate();
+					// var query = format("DELETE FROM Likes l WHERE l.shortId = '%s'", shortId);
+					// hibernate.createNativeQuery( query, Likes.class).executeUpdate();
+
+					var query = format("SELECT * FROM Likes l WHERE l.shortId = '%s'", shortId);
+					var likesToDelete = database.sql(query, Likes.class);
+					database.deleteCollection(likesToDelete);
 
 					var blobUrl = shrt.getBlobUrl().split("\\?")[0];
 
-					Log.info("Before delete on blob");
-					
 					blobDatabase.delete(shrt.getId(), Token.get(blobUrl) );
 				});
 			});	
@@ -181,18 +184,42 @@ public class JavaHibernateShorts implements Shorts {
 		return database.transaction( (hibernate) -> {
 
 			//delete shorts
-			var query1 = format("DELETE Short s WHERE s.ownerId = '%s'", userId);
-			hibernate.createQuery(query1, Short.class).executeUpdate();
+			var query1 = format("SELECT * FROM Short s WHERE s.ownerId = '%s'", userId);
+			List<Short> shortsToRemove = database.sql(query1, Short.class);
+			var resShorts = database.deleteCollection(shortsToRemove);
+			Log.info(() -> format("deleteAllShort : deleted %s shorts \n", countDeletedItems(resShorts)));
 
 			//delete follows
-			var query2 = format("DELETE Following f WHERE f.follower = '%s' OR f.followee = '%s'", userId, userId);
-			hibernate.createQuery(query2, Following.class).executeUpdate();
+			var query2 = format("SELECT * FROM Following f WHERE f.follower = '%s' OR f.followee = '%s'", userId, userId);	
+			List<Following> followingsToRemove = database.sql(query2, Following.class);
+			var resFollowings = database.deleteCollection(followingsToRemove);
+			Log.info(() -> format("deleteAllShort : deleted %s followings \n", countDeletedItems(resFollowings)));
 
 			//delete likes
-			var query3 = format("DELETE Likes l WHERE l.ownerId = '%s' OR l.userId = '%s'", userId, userId);
-			hibernate.createQuery(query3, Likes.class).executeUpdate();
+			var query3 = format("SELECT * FROM Likes l WHERE l.ownerId = '%s' OR l.userId = '%s'", userId, userId);
+			List<Likes> likesToRemove = database.sql(query3, Likes.class);
+			var resLikes = database.deleteCollection(likesToRemove);
+			Log.info(() -> format("deleteAllShort : deleted %s likes \n", countDeletedItems(resLikes)));
+			
+			//delete shorts
+			// var query1 = format("DELETE Short s WHERE s.ownerId = '%s'", userId);
+			// hibernate.createQuery(query1, Short.class).executeUpdate();
+
+			// //delete follows
+			// var query2 = format("DELETE Following f WHERE f.follower = '%s' OR f.followee = '%s'", userId, userId);
+			// hibernate.createQuery(query2, Following.class).executeUpdate();
+
+			// //delete likes
+			// var query3 = format("DELETE Likes l WHERE l.ownerId = '%s' OR l.userId = '%s'", userId, userId);
+			// hibernate.createQuery(query3, Likes.class).executeUpdate();
 
 		});
+	}
+
+	private <T> long countDeletedItems(List<Result<T>> likes) {
+		return likes.stream()
+				.filter(res -> res.isOK())
+				.count();
 	}
 	
 }
