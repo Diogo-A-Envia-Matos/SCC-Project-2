@@ -18,6 +18,7 @@ public class TukanoRestServer extends Application {
 
 	private static final String TOKEN_SECRET = "Token_secret";
 
+	public static final String BLOB_STORAGE_BASE_URL = "http://blob-service:8080/rest";
 	static String SERVER_BASE_URI = "http://%s:%s/tukano/rest";
 	static String HOST_NAME = IP.hostAddress();
 	public static final int PORT = 8080;
