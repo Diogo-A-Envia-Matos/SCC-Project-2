@@ -3,11 +3,14 @@ package tukano.impl.rest;
 import static java.lang.String.format;
 import static tukano.impl.rest.RestResource.statusCodeFrom;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+
+import org.hsqldb.error.ErrorCode;
 
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.WebApplicationException;
@@ -40,10 +43,15 @@ public class RestBlobsResource extends RestResource implements RestBlobs {
 			con = (HttpURLConnection) url.openConnection();
 			con.setRequestMethod("POST");
 			con.setRequestProperty("Content-Type", "application/octet-stream");
+			con.connect();
 			con.getOutputStream().write(bytes);
 			successCodeOrThrow(con.getResponseCode());
+		} catch (WebApplicationException e) {
+			e.printStackTrace();
+			throw e;
 		} catch (Exception e) {
 			e.printStackTrace();
+			throw new WebApplicationException(Status.INTERNAL_SERVER_ERROR);
 		}
 		finally {
 			if (con != null)
@@ -64,35 +72,74 @@ public class RestBlobsResource extends RestResource implements RestBlobs {
 			URL url = new URL(format("%s/%s?token=%s", TukanoRestServer.BLOB_STORAGE_BASE_URL, blobId, token));
 			con = (HttpURLConnection) url.openConnection();
 			con.setRequestMethod("GET");
+			con.connect();
 			int responseCode = con.getResponseCode();
-			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-			String inputLine;
-			StringBuffer content = new StringBuffer();
-			while ((inputLine = in.readLine()) != null) {
-				content.append(inputLine);
-			}
-			in.close();
+			successCodeOrThrow(responseCode);
+			byte[] bytes = con.getInputStream().readAllBytes();
+			return bytes;
+		} catch (WebApplicationException e) {
+			e.printStackTrace();
+			throw e;
 		} catch (Exception e) {
 			e.printStackTrace();
+			throw new WebApplicationException(Status.INTERNAL_SERVER_ERROR);
 		}
 		finally {
 			if (con != null)
 				con.disconnect();
 		}
-
-		// return super.resultOrThrow( impl.download( blobId, token ));
 	}
 
 	@Override
 	public void delete(String blobId, String token, Cookie cookie) {
 		Authentication.validateSession(cookie, ADMIN);
-		super.resultOrThrow( impl.delete( blobId, token ));
+		
+		//TODO: Redirecionar para o RestBlobsResource do blob-service
+		HttpURLConnection con = null;
+		try {
+			URL url = new URL(format("%s/%s?token=%s", TukanoRestServer.BLOB_STORAGE_BASE_URL, blobId, token));
+			con = (HttpURLConnection) url.openConnection();
+			con.setRequestMethod("DELETE");
+			con.connect();
+			int responseCode = con.getResponseCode();
+			successCodeOrThrow(responseCode);
+		} catch (WebApplicationException e) {
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WebApplicationException(Status.INTERNAL_SERVER_ERROR);
+		}
+		finally {
+			if (con != null)
+				con.disconnect();
+		}
 	}
 	
 	@Override
-	public void deleteAllBlobs(String userId, String password, Cookie cookie) {
+	public void deleteAllBlobs(String userId, String token, Cookie cookie) {
 		Authentication.validateSession(cookie, ADMIN);
-		super.resultOrThrow( impl.deleteAllBlobs( userId, password ));
+
+		//TODO: Redirecionar para o RestBlobsResource do blob-service
+		HttpURLConnection con = null;
+		try {
+			URL url = new URL(format("%s/%s/blobs?token=%s", TukanoRestServer.BLOB_STORAGE_BASE_URL, userId, token));
+			con = (HttpURLConnection) url.openConnection();
+			con.setRequestMethod("DELETE");
+			con.connect();
+			int responseCode = con.getResponseCode();
+			successCodeOrThrow(responseCode);
+		} catch (WebApplicationException e) {
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new WebApplicationException(Status.INTERNAL_SERVER_ERROR);
+		}
+		finally {
+			if (con != null)
+				con.disconnect();
+		}
 	}
 
 	private int successCodeOrThrow(int responseCode) {
