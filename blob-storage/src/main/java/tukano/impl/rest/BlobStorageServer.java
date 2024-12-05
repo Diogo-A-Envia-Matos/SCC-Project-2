@@ -5,18 +5,15 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 import tukano.api.rest.PodHealth;
-import tukano.impl.Token;
-import utils.Authentication;
 import utils.IP;
-import utils.Props;
 
-public class TukanoRestServer extends Application {
+public class BlobStorageServer extends Application {
 
-	final private static Logger Log = Logger.getLogger(TukanoRestServer.class.getName());
+	final private static Logger Log = Logger.getLogger(BlobStorageServer.class.getName());
 
 	private static final String TOKEN_SECRET = "Token_secret";
 
-	static String SERVER_BASE_URI = "http://%s:%s/tukano/rest";
+	static String SERVER_BASE_URI = "http://%s:%s/blob-storage/rest";
 	static String HOST_NAME = IP.hostAddress();
 	public static final int PORT = 8080;
 
@@ -29,21 +26,13 @@ public class TukanoRestServer extends Application {
 		System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s: %5$s");
 	}
 
-	public TukanoRestServer() {
-		Token.setSecret(TOKEN_SECRET);
-
-		Props.load("azurekeys-region.props"); //place the props file in resources folder under java/main
-
+	public BlobStorageServer() {
 		serverURI = String.format(SERVER_BASE_URI, HOST_NAME, PORT);
 		System.out.println("----------------------------------serverURI: " + serverURI);
 
 		resources.add(PodHealth.class);
 
 		resources.add(RestBlobsResource.class);
-		resources.add(RestUsersResource.class);
-		resources.add(RestShortsResource.class);
-
-        resources.add(Authentication.class);
 	}
 
 	@Override

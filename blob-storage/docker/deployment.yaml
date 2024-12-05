@@ -16,52 +16,34 @@ spec:
         "kubernetes.io/os": linux
       containers:
       - name: blob-image
-        image: #TODO: Create blob image and upload to DockerHub
+        image: hemareso/blob-storage
         ports:
         - containerPort: 8080
-        env:
-        - name: USE_SQL
-          value: "true"
-        - name: USE_AZURE_BLOB_STORAGE
-          value: "false"
-        # - name: KUBERNETES_CLUSTER_DNS
-        #   value: #TODO: Get DNS from Azure cluster
         resources:
           requests:
-            cpu: 1m
-            memory: 50Mi
+            cpu: 10m
+            memory: 128Mi
           limits:
             cpu: 75m
-            memory: 128Mi
+            memory: 512Mi
         startupProbe:
           httpGet:
-            path: /health
+            path: blob-storage/rest/health
             port: 8080
-          failureThreshold: 5
+          failureThreshold: 10
           initialDelaySeconds: 20
           periodSeconds: 10
         readinessProbe:
           httpGet:
-            path: /health
+            path: blob-storage/rest/health
             port: 8080
           failureThreshold: 3
           initialDelaySeconds: 3
           periodSeconds: 5
         livenessProbe:
           httpGet:
-            path: /health
+            path: blob-storage/rest/health
             port: 8080
           failureThreshold: 5
           initialDelaySeconds: 3
           periodSeconds: 3
-      initContainers:
-      - name: wait-for-postgres
-        image: busybox
-        command: ['sh', '-c', 'until nc -zv postgres-image 8080; do echo waiting for postgres-image; sleep 2; done;']
-        resources:
-          requests:
-            cpu: 1m
-            memory: 50Mi
-          limits:
-            cpu: 75m
-            memory: 128Mi    

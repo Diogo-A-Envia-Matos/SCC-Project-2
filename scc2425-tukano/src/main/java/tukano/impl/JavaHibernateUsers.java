@@ -4,7 +4,6 @@ import static java.lang.String.*;
 import static tukano.api.Result.ErrorCode.*;
 import static tukano.api.Result.*;
 
-import jakarta.ws.rs.NotAuthorizedException;
 import jakarta.ws.rs.core.Response;
 import java.util.List;
 import java.util.Objects;
@@ -20,14 +19,11 @@ import utils.DBHibernate;
 
 public class JavaHibernateUsers implements Users {
 
-	static final String COOKIE_KEY = "scc:session";
-	private static final int MAX_COOKIE_AGE = 3600;
-
 	private static Logger Log = Logger.getLogger(JavaHibernateUsers.class.getName());
 
 	private static Users instance;
 
-	private static DB database; // Choose between CosmosDB or Hibernate
+	private static DB database;
 	
 	private static Blobs blobDatabase = JavaFileBlobs.getInstance();
 
