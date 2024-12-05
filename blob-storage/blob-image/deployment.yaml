@@ -17,13 +17,14 @@ spec:
       containers:
       - name: blob-image
         image: #TODO: Create blob image and upload to DockerHub
+        # image: diogomatos1232/blob-server:latest
         ports:
         - containerPort: 8080
-        env:
-        - name: USE_SQL
-          value: "true"
-        - name: USE_AZURE_BLOB_STORAGE
-          value: "false"
+        # env:
+        # - name: USE_SQL
+        #   value: "true"
+        # - name: USE_AZURE_BLOB_STORAGE
+        #   value: "false"
         # - name: KUBERNETES_CLUSTER_DNS
         #   value: #TODO: Get DNS from Azure cluster
         resources:

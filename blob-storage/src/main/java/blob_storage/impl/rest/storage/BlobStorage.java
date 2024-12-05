@@ -1,8 +1,8 @@
-package tukano.impl.storage;
+package blob_storage.impl.rest.storage;
 
 import java.util.function.Consumer;
 
-import tukano.api.Result;
+import blob_storage.api.Result;
 
 public interface BlobStorage {
 		

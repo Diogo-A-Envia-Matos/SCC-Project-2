@@ -1,12 +1,12 @@
-package tukano.impl.storage;
+package blob_storage.impl.rest.storage;
 
 
-import static tukano.api.Result.error;
-import static tukano.api.Result.ok;
-import static tukano.api.Result.ErrorCode.BAD_REQUEST;
-import static tukano.api.Result.ErrorCode.CONFLICT;
-import static tukano.api.Result.ErrorCode.INTERNAL_ERROR;
-import static tukano.api.Result.ErrorCode.NOT_FOUND;
+import static blob_storage.api.Result.error;
+import static blob_storage.api.Result.ok;
+import static blob_storage.api.Result.ErrorCode.BAD_REQUEST;
+import static blob_storage.api.Result.ErrorCode.CONFLICT;
+import static blob_storage.api.Result.ErrorCode.INTERNAL_ERROR;
+import static blob_storage.api.Result.ErrorCode.NOT_FOUND;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.function.Consumer;
 
-import tukano.api.Result;
+import blob_storage.api.Result;
 import utils.Hash;
 import utils.IO;
 

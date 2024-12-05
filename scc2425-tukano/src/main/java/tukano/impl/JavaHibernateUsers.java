@@ -20,7 +20,7 @@ import utils.DBHibernate;
 
 public class JavaHibernateUsers implements Users {
 
-	static final String COOKIE_KEY = "scc:session";
+	// static final String COOKIE_KEY = "scc:session";
 	private static final int MAX_COOKIE_AGE = 3600;
 
 	private static Logger Log = Logger.getLogger(JavaHibernateUsers.class.getName());

@@ -20,11 +20,13 @@ spec:
         image: hemareso/tukano-server:latest
         ports:
         - containerPort: 8080
-        env:
-        - name: USE_SQL
-          value: "true"
-        - name: USE_AZURE_BLOB_STORAGE
-          value: "false"
+        # env:
+        # - name: USE_SQL
+        #   value: "true"
+        # - name: USE_AZURE_BLOB_STORAGE
+        #   value: "false"
+        # - name: KUBERNETES_CLUSTER_DNS
+        #   value: #TODO: Get DNS from Azure cluster
         resources:
           requests:
             cpu: 5m

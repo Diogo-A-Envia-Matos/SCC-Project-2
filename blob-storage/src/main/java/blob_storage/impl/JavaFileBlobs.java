@@ -1,15 +1,15 @@
-package tukano.impl;
+package blob_storage.impl;
 
 import static java.lang.String.*;
-import static tukano.api.Result.ErrorCode.*;
-import static tukano.api.Result.*;
+import static blob_storage.api.Result.ErrorCode.*;
+import static blob_storage.api.Result.*;
 
 import java.util.logging.Logger;
-import tukano.api.Blobs;
-import tukano.api.Result;
-import tukano.impl.rest.TukanoRestServer;
-import tukano.impl.storage.BlobStorage;
-import tukano.impl.storage.FileSystemStorage;
+import blob_storage.api.Blobs;
+import blob_storage.api.Result;
+import blob_storage.impl.rest.BlobStorageRestServer;
+import blob_storage.impl.storage.BlobStorage;
+import blob_storage.impl.storage.FileSystemStorage;
 import utils.Hash;
 import utils.Hex;
 
@@ -29,7 +29,7 @@ public class JavaFileBlobs implements Blobs {
 
 	private JavaFileBlobs() {
 		storage = new FileSystemStorage();
-		baseURI = String.format("%s/%s/", TukanoRestServer.serverURI, Blobs.NAME);
+		baseURI = String.format("%s/%s/", BlobStorageRestServer.serverURI, Blobs.NAME);
 	}
 	
 	@Override
