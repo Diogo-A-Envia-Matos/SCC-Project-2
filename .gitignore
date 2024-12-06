@@ -13,7 +13,7 @@ dummy-blob-storage/.idea
 # binarios
 scc2425-tukano/target
 blob-storage/target
-#dummy-blob-storage/target
+dummy-blob-storage/target
 
 /.vscode
 /.vscode
