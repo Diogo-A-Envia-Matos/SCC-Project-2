@@ -1,0 +1,15 @@
+#TODO: Ver persistent volume
+#TODO: ReadWriteOnce funciona (porque apenas se usa um cluster)
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: blob-persintent-volume-claim
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: ""
+  volumeMode: Filesystem
+  volumeName: blob-persintent-volume
+  resources:
+    requests:
+      storage: 1Gi

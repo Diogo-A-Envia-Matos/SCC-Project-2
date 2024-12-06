@@ -18,7 +18,8 @@ import utils.Props;
 
 public class RedisCache {
     
-    private static final String RedisHostname = Props.get("REDIS_URL", "redis-service");
+    // private static final String RedisHostname = Props.get("REDIS_URL", "redis-service");
+    private static final String RedisHostname = System.getenv("REDIS_URL");
 	private static final int REDIS_PORT = 6379;
 	private static final int REDIS_TIMEOUT = 1000;
 	private static final boolean Redis_USE_TLS = false;

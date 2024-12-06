@@ -1,26 +1,24 @@
-package tukano.impl.rest;
+package main.java.blobStorage.impl.rest;
 
 import jakarta.ws.rs.core.Application;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
-import tukano.api.rest.PodHealth;
-import tukano.impl.Token;
+import blobStorage.api.rest.PodHealth;
+import blobStorage.impl.Token;
 import utils.Authentication;
 import utils.IP;
 import utils.Props;
 import utils.auth.RequestCookiesCleanupFilter;
 import utils.auth.RequestCookiesFilter;
 
-public class TukanoRestServer extends Application {
+public class BlobStorageRestServer extends Application {
 
-	final private static Logger Log = Logger.getLogger(TukanoRestServer.class.getName());
+	final private static Logger Log = Logger.getLogger(BlobStorageRestServer.class.getName());
 
 	private static final String TOKEN_SECRET = "Token_secret";
 
-	//TODO: Check if BLOB_URL path is "/rest/blobs", "/rest" or "/blobs"
-	public static final String blobStorage_BASE_URL = "http://blob-service:8080/rest/blobs";
-	static String SERVER_BASE_URI = "http://%s:%s/tukano/rest";
+	static String SERVER_BASE_URI = "http://%s:%s/blob-service/rest";
 	static String HOST_NAME = IP.hostAddress();
 	public static final int PORT = 8080;
 
@@ -33,10 +31,10 @@ public class TukanoRestServer extends Application {
 		System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s: %5$s");
 	}
 
-	public TukanoRestServer() {
+	public BlobStorageRestServer() {
 		Token.setSecret(TOKEN_SECRET);
 
-		Props.load("azurekeys-region.props"); //place the props file in resources folder under java/main
+		// Props.load("azurekeys-region.props"); //place the props file in resources folder under java/main
 
 		serverURI = String.format(SERVER_BASE_URI, HOST_NAME, PORT);
 		System.out.println("----------------------------------serverURI: " + serverURI);
@@ -44,14 +42,6 @@ public class TukanoRestServer extends Application {
 		resources.add(PodHealth.class);
 
 		resources.add(RestBlobsResource.class);
-		resources.add(RestUsersResource.class);
-		resources.add(RestShortsResource.class);
-
-        resources.add(Authentication.class);
-		
-		resources.add(RequestCookiesFilter.class);
-     	resources.add(RequestCookiesCleanupFilter.class);
-
 	}
 
 	@Override

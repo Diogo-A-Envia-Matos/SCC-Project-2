@@ -29,7 +29,7 @@ public class RestBlobsResource extends RestResource implements RestBlobs {
 
 	// static final Blobs impl = JavaFileBlobs.getInstance();
 
-	// static final String BLOB_STORAGE_BASE_URL = "http://blob-service:8080/rest";
+	// static final String blobStorage_BASE_URL = "http://blob-service:8080/rest";
 
 	@Override
 	public void upload(String blobId, byte[] bytes, String token, Cookie cookie) {
@@ -39,7 +39,7 @@ public class RestBlobsResource extends RestResource implements RestBlobs {
 		//TODO: Redirecionar para o RestBlobsResource do blob-service
 		HttpURLConnection con = null;
 		try {
-			URL url = new URL(format("%s/%s?token=%s", TukanoRestServer.BLOB_STORAGE_BASE_URL, blobId, token));
+			URL url = new URL(format("%s/%s?token=%s", TukanoRestServer.blobStorage_BASE_URL, blobId, token));
 			con = (HttpURLConnection) url.openConnection();
 			con.setRequestMethod("POST");
 			con.setRequestProperty("Content-Type", "application/octet-stream");
@@ -69,7 +69,7 @@ public class RestBlobsResource extends RestResource implements RestBlobs {
 		//TODO: Redirecionar para o RestBlobsResource do blob-service
 		HttpURLConnection con = null;
 		try {
-			URL url = new URL(format("%s/%s?token=%s", TukanoRestServer.BLOB_STORAGE_BASE_URL, blobId, token));
+			URL url = new URL(format("%s/%s?token=%s", TukanoRestServer.blobStorage_BASE_URL, blobId, token));
 			con = (HttpURLConnection) url.openConnection();
 			con.setRequestMethod("GET");
 			con.connect();
@@ -97,7 +97,7 @@ public class RestBlobsResource extends RestResource implements RestBlobs {
 		//TODO: Redirecionar para o RestBlobsResource do blob-service
 		HttpURLConnection con = null;
 		try {
-			URL url = new URL(format("%s/%s?token=%s", TukanoRestServer.BLOB_STORAGE_BASE_URL, blobId, token));
+			URL url = new URL(format("%s/%s?token=%s", TukanoRestServer.blobStorage_BASE_URL, blobId, token));
 			con = (HttpURLConnection) url.openConnection();
 			con.setRequestMethod("DELETE");
 			con.connect();
@@ -123,7 +123,7 @@ public class RestBlobsResource extends RestResource implements RestBlobs {
 		//TODO: Redirecionar para o RestBlobsResource do blob-service
 		HttpURLConnection con = null;
 		try {
-			URL url = new URL(format("%s/%s/blobs?token=%s", TukanoRestServer.BLOB_STORAGE_BASE_URL, userId, token));
+			URL url = new URL(format("%s/%s/blobs?token=%s", TukanoRestServer.blobStorage_BASE_URL, userId, token));
 			con = (HttpURLConnection) url.openConnection();
 			con.setRequestMethod("DELETE");
 			con.connect();
