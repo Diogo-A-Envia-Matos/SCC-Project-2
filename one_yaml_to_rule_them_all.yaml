@@ -257,8 +257,16 @@ spec:
       containers:
       - name: blob-image
         image: hemareso/blob-storage
+        volumeMounts:
+        - mountPath: "/mnt/blobs"
+          name: blob-persistent-volume
         ports:
         - containerPort: 8080
+        env:
+        - name: REDIS_URL
+          value: "redis-service"
+        # - name: KUBERNETES_CLUSTER_DNS
+        #   value: #TODO: Get DNS from Azure cluster
         resources:
           requests:
             cpu: 100m
@@ -287,6 +295,10 @@ spec:
           failureThreshold: 5
           initialDelaySeconds: 3
           periodSeconds: 3
+      volumes:
+        - name: blob-persistent-volume
+          persistentVolumeClaim:
+            claimName: blob-persistent-volume-claim
 ---
 apiVersion: v1
 kind: Service
@@ -300,3 +312,33 @@ spec:
     targetPort: 8080
   selector:
     app: blob-image
+---
+#persistent volume
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: blob-persistent-volume
+spec:
+  accessModes:
+  - ReadWriteOnce
+  hostPath:
+    path: /mnt/blobs
+  capacity:
+    storage: 2Gi
+  storageClassName: ""
+  volumeMode: Filesystem
+---
+#persistent volume claim
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: blob-persistent-volume-claim
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: ""
+  volumeMode: Filesystem
+  volumeName: blob-persistent-volume
+  resources:
+    requests:
+      storage: 1Gi

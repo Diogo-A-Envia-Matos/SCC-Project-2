@@ -12,5 +12,3 @@ spec:
     storage: 2Gi
   storageClassName: ""
   volumeMode: Filesystem
-  claimRef:
-    name: blob-persistent-volume-claim

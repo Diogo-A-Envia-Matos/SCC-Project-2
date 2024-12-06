@@ -15,7 +15,7 @@
     <servlet-class>org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher</servlet-class>
       <init-param>
         <param-name>jakarta.ws.rs.core.Application</param-name>
-        <param-value>blobStorage.impl.rest.storage.BlobStorageRestServer</param-value>
+        <param-value>blobStorage.impl.rest.BlobStorageRestServer</param-value>
       </init-param>
   </servlet>
   <servlet-mapping>
