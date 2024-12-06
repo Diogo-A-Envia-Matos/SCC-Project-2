@@ -21,10 +21,10 @@ spec:
         ports:
         - containerPort: 8080
         env:
-        - name: USE_SQL
-          value: "true"
-        - name: USE_AZURE_BLOB_STORAGE
-          value: "false"
+        - name: REDIS_URL
+          value: "redis-service"
+        # - name: KUBERNETES_CLUSTER_DNS
+        #   value: #TODO: Get DNS from Azure cluster
         resources:
           requests:
             cpu: 100m

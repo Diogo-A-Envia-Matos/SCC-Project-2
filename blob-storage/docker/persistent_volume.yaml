@@ -1,0 +1,12 @@
+#TODO: Ver persistent volume
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: blob-persintent-volume
+spec:
+  capacity:
+    storage: 2Gi
+  storageClassName: ""
+  volumeMode: Filesystem
+  claimRef:
+    name: blob-persintent-volume-claim

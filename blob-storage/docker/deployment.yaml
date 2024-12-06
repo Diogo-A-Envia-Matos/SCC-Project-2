@@ -1,23 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: tukano-image
+  name: blob-image
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: tukano-image
+      app: blob-image
   template:
     metadata:
       labels:
-        app: tukano-image
+        app: blob-image
     spec:
       nodeSelector:
         "kubernetes.io/os": linux
       containers:
-      - name: tukano-image
-      #TODO: Create tukano image and upload to DockerHub
-        image: hemareso/tukano-server:latest
+      - name: blob-image
+        image: #TODO: Create blob image and upload to DockerHub
+        # image: diogomatos1232/blob-server:latest
+        volumeMounts:
+        - mountPath: "/mnt/blobs"
+          name: blob-persintent-volume
         ports:
         - containerPort: 8080
         env:
@@ -27,36 +30,40 @@ spec:
         #   value: #TODO: Get DNS from Azure cluster
         resources:
           requests:
-            cpu: 100m
-            memory: 128Mi
+            cpu: 1m
+            memory: 50Mi
           limits:
-            cpu: 200m
-            memory: 512Mi
+            cpu: 75m
+            memory: 128Mi
         startupProbe:
           httpGet:
-            path: tukano/rest/health
+            path: /health
             port: 8080
-          failureThreshold: 15
+          failureThreshold: 5
           initialDelaySeconds: 20
           periodSeconds: 10
         readinessProbe:
           httpGet:
-            path: tukano/rest/health
+            path: /health
             port: 8080
           failureThreshold: 3
           initialDelaySeconds: 3
           periodSeconds: 5
         livenessProbe:
           httpGet:
-            path: tukano/rest/health
+            path: /health
             port: 8080
           failureThreshold: 5
           initialDelaySeconds: 3
           periodSeconds: 3
+      volumes:
+        - name: blob-persintent-volume
+          persistentVolumeClaim:
+            claimName: blob-persintent-volume-claim
       initContainers:
       - name: wait-for-postgres
         image: busybox
-        command: ['sh', '-c', 'until nc -zv postgres-service 5432; do echo waiting for postgres-service; sleep 2; done;']
+        command: ['sh', '-c', 'until nc -zv postgres-image 5432; do echo waiting for postgres-image; sleep 2; done;']
         resources:
           requests:
             cpu: 1m
@@ -64,26 +71,3 @@ spec:
           limits:
             cpu: 75m
             memory: 128Mi    
-      - name: wait-for-redis
-        image: busybox
-        command: ['sh', '-c', 'until nc -zv redis-service 6379; do echo waiting for redis-service; sleep 2; done;']
-        resources:
-          requests:
-            cpu: 1m
-            memory: 50Mi
-          limits:
-            cpu: 75m
-            memory: 128Mi    
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: tukano-service
-spec:
-  type: LoadBalancer
-  ports:
-  - name: http
-    port: 80
-    targetPort: 8080
-  selector:
-    app: tukano-image
