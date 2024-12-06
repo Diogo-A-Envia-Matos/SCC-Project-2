@@ -7,7 +7,6 @@ import static tukano.api.Result.*;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
-import tukano.api.Blobs;
 import tukano.api.Result;
 import tukano.api.Short;
 import tukano.api.Shorts;
@@ -44,7 +43,7 @@ public class JavaHibernateShorts implements Shorts {
 		return errorOrResult( okUser(userId, password), user -> {
 			
 			var shortId = format("%s+%s", userId, UUID.randomUUID());
-			var blobUrl = format("%s/%s/%s", TukanoRestServer.blobStorage_BASE_URL, Blobs.NAME, shortId); 
+			var blobUrl = format("%s/%s", TukanoRestServer.blobStorage_BASE_URL, shortId);
 			var shrt = new Short(shortId, userId, blobUrl);
 
 			return errorOrValue(database.insertOne(shrt), s -> s.copyWithLikes_And_Token(0));
@@ -200,18 +199,6 @@ public class JavaHibernateShorts implements Shorts {
 			List<Likes> likesToRemove = database.sql(query3, Likes.class);
 			var resLikes = database.deleteCollection(likesToRemove);
 			Log.info(() -> format("deleteAllShort : deleted %s likes \n", countDeletedItems(resLikes)));
-			
-			//delete shorts
-			// var query1 = format("DELETE Short s WHERE s.ownerId = '%s'", userId);
-			// hibernate.createQuery(query1, Short.class).executeUpdate();
-
-			// //delete follows
-			// var query2 = format("DELETE Following f WHERE f.follower = '%s' OR f.followee = '%s'", userId, userId);
-			// hibernate.createQuery(query2, Following.class).executeUpdate();
-
-			// //delete likes
-			// var query3 = format("DELETE Likes l WHERE l.ownerId = '%s' OR l.userId = '%s'", userId, userId);
-			// hibernate.createQuery(query3, Likes.class).executeUpdate();
 
 		});
 	}
