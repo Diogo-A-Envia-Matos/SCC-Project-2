@@ -15,6 +15,7 @@ import tukano.api.User;
 import tukano.impl.data.Following;
 import tukano.impl.data.Likes;
 import tukano.impl.rest.TukanoRestServer;
+import utils.BlobManager;
 import utils.DBHibernate;
 
 public class JavaHibernateShorts implements Shorts {
@@ -24,8 +25,6 @@ public class JavaHibernateShorts implements Shorts {
 	private static Shorts instance;
 
 	private static DBHibernate database; // Choose between CosmosDB or Hibernate
-
-	private static Blobs blobDatabase = JavaFileBlobs.getInstance();
 
 	synchronized public static Shorts getInstance() {
 		if( instance == null )
@@ -86,7 +85,8 @@ public class JavaHibernateShorts implements Shorts {
 
 					var blobUrl = shrt.getBlobUrl().split("\\?")[0];
 
-					blobDatabase.delete(shrt.getId(), Token.get(blobUrl) );
+
+					BlobManager.delete(shrt.getId(), Token.get(blobUrl) );
 				});
 			});	
 		});

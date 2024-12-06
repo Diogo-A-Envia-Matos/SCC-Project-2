@@ -1,20 +1,8 @@
 package utils;
 
 import com.azure.cosmos.CosmosException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import exceptions.InvalidClassException;
-import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
-import tukano.api.Blobs;
-import tukano.api.Result;
-import tukano.api.Result.ErrorCode;
-import tukano.api.Short;
-import tukano.api.User;
-import tukano.impl.data.Following;
-import tukano.impl.data.Likes;
-import utils.Props;
 
 public class RedisCache {
     

@@ -27,16 +27,16 @@ spec:
           value: "false"
         resources:
           requests:
-            cpu: 5m
+            cpu: 100m
             memory: 128Mi
           limits:
-            cpu: 75m
+            cpu: 200m
             memory: 512Mi
         startupProbe:
           httpGet:
             path: tukano/rest/health
             port: 8080
-          failureThreshold: 10
+          failureThreshold: 15
           initialDelaySeconds: 20
           periodSeconds: 10
         readinessProbe:
@@ -56,7 +56,7 @@ spec:
       initContainers:
       - name: wait-for-postgres
         image: busybox
-        command: ['sh', '-c', 'until nc -zv postgres-image 5432; do echo waiting for postgres-image; sleep 2; done;']
+        command: ['sh', '-c', 'until nc -zv postgres-service 5432; do echo waiting for postgres-service; sleep 2; done;']
         resources:
           requests:
             cpu: 1m
@@ -66,7 +66,7 @@ spec:
             memory: 128Mi    
       - name: wait-for-redis
         image: busybox
-        command: ['sh', '-c', 'until nc -zv redis-image 6379; do echo waiting for redis-image; sleep 2; done;']
+        command: ['sh', '-c', 'until nc -zv redis-service 6379; do echo waiting for redis-service; sleep 2; done;']
         resources:
           requests:
             cpu: 1m

@@ -9,11 +9,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.logging.Logger;
-import tukano.api.Blobs;
 import tukano.api.Result;
 import tukano.api.User;
 import tukano.api.Users;
 import utils.Authentication;
+import utils.BlobManager;
 import utils.DB;
 import utils.DBHibernate;
 
@@ -24,8 +24,6 @@ public class JavaHibernateUsers implements Users {
 	private static Users instance;
 
 	private static DB database;
-	
-	private static Blobs blobDatabase = JavaFileBlobs.getInstance();
 
 	synchronized public static Users getInstance() {
 		if( instance == null )
@@ -86,7 +84,7 @@ public class JavaHibernateUsers implements Users {
 			// Delete user shorts and related info asynchronously in a separate thread
 			Executors.defaultThreadFactory().newThread( () -> {
 				JavaHibernateShorts.getInstance().deleteAllShorts(userId, pwd, Token.get(userId));
-				blobDatabase.deleteAllBlobs(userId, Token.get(userId));
+				BlobManager.deleteAllBlobs(userId, Token.get(userId));
 			}).start();
 			
 			return database.deleteOne( user);

@@ -18,8 +18,7 @@ spec:
       - name: postgres-image
         image: postgres
         ports:
-        #TODO: Alterar port para o esperado pelo Postgres
-        - containerPort: 5432 # trying with 5432 default postgres port
+        - containerPort: 5432
         env:
         - name: POSTGRES_USER
           value: postgres
@@ -36,21 +35,18 @@ spec:
             memory: 128Mi
         startupProbe:
           tcpSocket:
-            #path: /health
             port: 5432
           failureThreshold: 5
           initialDelaySeconds: 20
           periodSeconds: 10
         readinessProbe:
           tcpSocket:
-            #path: /health
             port: 5432
           failureThreshold: 3
           initialDelaySeconds: 3
           periodSeconds: 5
         livenessProbe:
           tcpSocket:
-            #path: /health
             port: 5432
           failureThreshold: 5
           initialDelaySeconds: 3
@@ -59,7 +55,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: postgres-image
+  name: postgres-service
 spec:
   type: ClusterIP
   ports:

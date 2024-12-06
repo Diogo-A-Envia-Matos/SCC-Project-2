@@ -1,0 +1,292 @@
+#this yaml is an aggregate of all yamls, to simply k8s deployment
+#each deployment & service exists in their respective folder on our main directory (hopefully to simplify reading)
+
+#redis-service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-image
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis-image
+  template:
+    metadata:
+      labels:
+        app: redis-image
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": linux
+      containers:
+      - name: redis-image
+        image: redis
+        ports:
+        - containerPort: 6379
+        resources:
+          requests:
+            cpu: 1m
+            memory: 50Mi
+          limits:
+            cpu: 75m
+            memory: 128Mi
+        startupProbe:
+          tcpSocket:
+            #path: /health
+            port: 6379
+          failureThreshold: 5
+          initialDelaySeconds: 20
+          periodSeconds: 10
+        readinessProbe:
+          tcpSocket:
+            #path: /health
+            port: 6379
+          failureThreshold: 3
+          initialDelaySeconds: 3
+          periodSeconds: 5
+        livenessProbe:
+          tcpSocket:
+            #path: /health
+            port: 6379
+          failureThreshold: 5
+          initialDelaySeconds: 3
+          periodSeconds: 3
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-service
+spec:
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 6379
+    targetPort: 6379
+  selector:
+    app: redis-image
+---
+
+#postgres-service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-image
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-image
+  template:
+    metadata:
+      labels:
+        app: postgres-image
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": linux
+      containers:
+      - name: postgres-image
+        image: postgres
+        ports:
+        - containerPort: 5432
+        env:
+        - name: POSTGRES_USER
+          value: postgres
+        - name: POSTGRES_PASSWORD
+          value: postgres
+        - name: POSTGRES_DB
+          value: tukano
+        resources:
+          requests:
+            cpu: 1m
+            memory: 50Mi
+          limits:
+            cpu: 75m
+            memory: 128Mi
+        startupProbe:
+          tcpSocket:
+            port: 5432
+          failureThreshold: 5
+          initialDelaySeconds: 20
+          periodSeconds: 10
+        readinessProbe:
+          tcpSocket:
+            port: 5432
+          failureThreshold: 3
+          initialDelaySeconds: 3
+          periodSeconds: 5
+        livenessProbe:
+          tcpSocket:
+            port: 5432
+          failureThreshold: 5
+          initialDelaySeconds: 3
+          periodSeconds: 3
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-service
+spec:
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 5432
+    targetPort: 5432
+  selector:
+    app: postgres-image
+---
+
+#tukano-service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tukano-image
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tukano-image
+  template:
+    metadata:
+      labels:
+        app: tukano-image
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": linux
+      containers:
+      - name: tukano-image
+      #TODO: Create tukano image and upload to DockerHub
+        image: hemareso/tukano-server:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: USE_SQL
+          value: "true"
+        - name: USE_AZURE_BLOB_STORAGE
+          value: "false"
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 200m
+            memory: 512Mi
+        startupProbe:
+          httpGet:
+            path: tukano/rest/health
+            port: 8080
+          failureThreshold: 15
+          initialDelaySeconds: 20
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: tukano/rest/health
+            port: 8080
+          failureThreshold: 3
+          initialDelaySeconds: 3
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: tukano/rest/health
+            port: 8080
+          failureThreshold: 5
+          initialDelaySeconds: 3
+          periodSeconds: 3
+      initContainers:
+      - name: wait-for-postgres
+        image: busybox
+        command: ['sh', '-c', 'until nc -zv postgres-service 5432; do echo waiting for postgres-service; sleep 2; done;']
+        resources:
+          requests:
+            cpu: 1m
+            memory: 50Mi
+          limits:
+            cpu: 75m
+            memory: 128Mi    
+      - name: wait-for-redis
+        image: busybox
+        command: ['sh', '-c', 'until nc -zv redis-service 6379; do echo waiting for redis-service; sleep 2; done;']
+        resources:
+          requests:
+            cpu: 1m
+            memory: 50Mi
+          limits:
+            cpu: 75m
+            memory: 128Mi    
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tukano-service
+spec:
+  type: LoadBalancer
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 8080
+  selector:
+    app: tukano-image
+---
+
+#blob-service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blob-image
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: blob-image
+  template:
+    metadata:
+      labels:
+        app: blob-image
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": linux
+      containers:
+      - name: blob-image
+        image: hemareso/blob-storage
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 200m
+            memory: 512Mi
+        startupProbe:
+          httpGet:
+            path: blob-storage/rest/health
+            port: 8080
+          failureThreshold: 15
+          initialDelaySeconds: 20
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: blob-storage/rest/health
+            port: 8080
+          failureThreshold: 3
+          initialDelaySeconds: 3
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: blob-storage/rest/health
+            port: 8080
+          failureThreshold: 5
+          initialDelaySeconds: 3
+          periodSeconds: 3
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: blob-service
+spec:
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 8080
+  selector:
+    app: blob-image
