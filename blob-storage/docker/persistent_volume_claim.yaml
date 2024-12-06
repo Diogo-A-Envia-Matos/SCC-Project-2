@@ -3,13 +3,13 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: blob-persintent-volume-claim
+  name: blob-persistent-volume-claim
 spec:
   accessModes:
   - ReadWriteOnce
   storageClassName: ""
   volumeMode: Filesystem
-  volumeName: blob-persintent-volume
+  volumeName: blob-persistent-volume
   resources:
     requests:
       storage: 1Gi

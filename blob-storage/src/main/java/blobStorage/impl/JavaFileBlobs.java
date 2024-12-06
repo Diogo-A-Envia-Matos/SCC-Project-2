@@ -1,15 +1,15 @@
-package main.java.blobStorage.impl;
+package blobStorage.impl;
 
 import static java.lang.String.*;
 import static blobStorage.api.Result.ErrorCode.*;
 import static blobStorage.api.Result.*;
 
+import blobStorage.impl.rest.storage.BlobStorage;
+import blobStorage.impl.rest.storage.FileSystemStorage;
 import java.util.logging.Logger;
 import blobStorage.api.Blobs;
 import blobStorage.api.Result;
 import blobStorage.impl.rest.BlobStorageRestServer;
-import blobStorage.impl.storage.BlobStorage;
-import blobStorage.impl.storage.FileSystemStorage;
 import utils.Hash;
 import utils.Hex;
 

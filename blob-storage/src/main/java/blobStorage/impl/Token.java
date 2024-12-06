@@ -1,4 +1,4 @@
-package main.java.blobStorage.impl;
+package blobStorage.impl;
 
 import java.util.logging.Logger;
 

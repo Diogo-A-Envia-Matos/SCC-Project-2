@@ -2,11 +2,15 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: blob-persintent-volume
+  name: blob-persistent-volume
 spec:
+  accessModes:
+  - ReadWriteOnce
+  hostPath:
+    path: /mnt/blobs
   capacity:
     storage: 2Gi
   storageClassName: ""
   volumeMode: Filesystem
   claimRef:
-    name: blob-persintent-volume-claim
+    name: blob-persistent-volume-claim

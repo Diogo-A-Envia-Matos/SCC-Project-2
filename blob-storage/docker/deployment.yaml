@@ -16,11 +16,10 @@ spec:
         "kubernetes.io/os": linux
       containers:
       - name: blob-image
-        image: #TODO: Create blob image and upload to DockerHub
-        # image: diogomatos1232/blob-server:latest
+        image: hemareso/blob-storage
         volumeMounts:
         - mountPath: "/mnt/blobs"
-          name: blob-persintent-volume
+          name: blob-persistent-volume
         ports:
         - containerPort: 8080
         env:
@@ -30,44 +29,33 @@ spec:
         #   value: #TODO: Get DNS from Azure cluster
         resources:
           requests:
-            cpu: 1m
-            memory: 50Mi
-          limits:
-            cpu: 75m
+            cpu: 100m
             memory: 128Mi
+          limits:
+            cpu: 200m
+            memory: 512Mi
         startupProbe:
           httpGet:
-            path: /health
+            path: blob-storage/rest/health
             port: 8080
-          failureThreshold: 5
+          failureThreshold: 15
           initialDelaySeconds: 20
           periodSeconds: 10
         readinessProbe:
           httpGet:
-            path: /health
+            path: blob-storage/rest/health
             port: 8080
           failureThreshold: 3
           initialDelaySeconds: 3
           periodSeconds: 5
         livenessProbe:
           httpGet:
-            path: /health
+            path: blob-storage/rest/health
             port: 8080
           failureThreshold: 5
           initialDelaySeconds: 3
           periodSeconds: 3
       volumes:
-        - name: blob-persintent-volume
+        - name: blob-persistent-volume
           persistentVolumeClaim:
-            claimName: blob-persintent-volume-claim
-      initContainers:
-      - name: wait-for-postgres
-        image: busybox
-        command: ['sh', '-c', 'until nc -zv postgres-image 5432; do echo waiting for postgres-image; sleep 2; done;']
-        resources:
-          requests:
-            cpu: 1m
-            memory: 50Mi
-          limits:
-            cpu: 75m
-            memory: 128Mi    
+            claimName: blob-persistent-volume-claim

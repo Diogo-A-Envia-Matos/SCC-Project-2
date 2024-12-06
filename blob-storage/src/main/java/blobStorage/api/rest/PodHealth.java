@@ -1,4 +1,4 @@
-package main.java.blobStorage.api.rest;
+package blobStorage.api.rest;
 
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;

@@ -1,12 +1,8 @@
-package main.java.blobStorage.impl.rest.storage;
+package blobStorage.impl.rest.storage;
 
 
-import static blobStorage.api.Result.error;
-import static blobStorage.api.Result.ok;
-import static blobStorage.api.Result.ErrorCode.BAD_REQUEST;
-import static blobStorage.api.Result.ErrorCode.CONFLICT;
-import static blobStorage.api.Result.ErrorCode.INTERNAL_ERROR;
-import static blobStorage.api.Result.ErrorCode.NOT_FOUND;
+import static blobStorage.api.Result.*;
+import static blobStorage.api.Result.ErrorCode.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,7 +10,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.function.Consumer;
 
 import blobStorage.api.Result;
 import utils.Hash;

@@ -1,16 +1,12 @@
-package main.java.blobStorage.impl.rest;
+package blobStorage.impl.rest;
 
+import blobStorage.api.rest.PodHealth;
+import blobStorage.impl.Token;
 import jakarta.ws.rs.core.Application;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
-import blobStorage.api.rest.PodHealth;
-import blobStorage.impl.Token;
-import utils.Authentication;
 import utils.IP;
-import utils.Props;
-import utils.auth.RequestCookiesCleanupFilter;
-import utils.auth.RequestCookiesFilter;
 
 public class BlobStorageRestServer extends Application {
 
@@ -18,7 +14,7 @@ public class BlobStorageRestServer extends Application {
 
 	private static final String TOKEN_SECRET = "Token_secret";
 
-	static String SERVER_BASE_URI = "http://%s:%s/blob-service/rest";
+	static String SERVER_BASE_URI = "http://%s:%s/blob-storage/rest";
 	static String HOST_NAME = IP.hostAddress();
 	public static final int PORT = 8080;
 

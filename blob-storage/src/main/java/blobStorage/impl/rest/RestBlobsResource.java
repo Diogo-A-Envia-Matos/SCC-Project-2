@@ -1,11 +1,9 @@
-package main.java.blobStorage.impl.rest;
+package blobStorage.impl.rest;
 
-import jakarta.inject.Singleton;
-import jakarta.ws.rs.core.Cookie;
 import blobStorage.api.Blobs;
 import blobStorage.api.rest.RestBlobs;
 import blobStorage.impl.JavaFileBlobs;
-import utils.Authentication;
+import jakarta.inject.Singleton;
 
 @Singleton
 public class RestBlobsResource extends RestResource implements RestBlobs {

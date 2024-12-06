@@ -18,9 +18,7 @@ spec:
       - name: postgres-image
         image: postgres
         ports:
-        #TODO: Alterar port para o esperado pelo Postgres
-	# usar o 8080 necessita de uma config extra para mudar o port da imagem para 8080 (POSTGRES_PORT = 8080)
-        - containerPort: 5432 # trying with 5432 default postgres port
+        - containerPort: 5432
         env:
         #TODO: Replace with Kubernetes Secret (optional)
         - name: POSTGRES_USER

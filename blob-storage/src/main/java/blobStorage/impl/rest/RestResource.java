@@ -1,8 +1,8 @@
-package main.java.blobStorage.impl.rest;
+package blobStorage.impl.rest;
 
+import blobStorage.api.Result;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response.Status;
-import blobStorage.api.Result;
 
 public class RestResource {
 

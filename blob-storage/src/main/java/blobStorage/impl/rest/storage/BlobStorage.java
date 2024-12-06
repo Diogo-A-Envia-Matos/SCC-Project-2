@@ -1,6 +1,4 @@
-package main.java.blobStorage.impl.rest.storage;
-
-import java.util.function.Consumer;
+package blobStorage.impl.rest.storage;
 
 import blobStorage.api.Result;
 
