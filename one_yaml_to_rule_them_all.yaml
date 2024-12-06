@@ -163,16 +163,14 @@ spec:
         "kubernetes.io/os": linux
       containers:
       - name: tukano-image
-      #TODO: Create tukano image and upload to DockerHub
         image: hemareso/tukano-server:latest
         ports:
         - containerPort: 8080
         env:
-        env:
         - name: REDIS_URL
           value: "redis-service"
-        # - name: KUBERNETES_CLUSTER_DNS
-        #   value: #TODO: Get DNS from Azure cluster
+        - name: KUBERNETES_CLUSTER_DNS
+          value: 74.178.104.83
         resources:
           requests:
             cpu: 100m

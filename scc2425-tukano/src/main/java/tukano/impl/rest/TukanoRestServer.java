@@ -17,9 +17,10 @@ public class TukanoRestServer extends Application {
 	private static final String TOKEN_SECRET = "Token_secret";
 
 	//TODO: Check if BLOB_URL path is "/rest/blobs", "/rest" or "/blobs"
-	public static final String blobStorage_BASE_URL = "http://blob-service:8080/rest/blobs";
+	public static final String BLOB_STORAGE_BASE_URL = "http://blob-service:8080/rest/blobs";
 	static String SERVER_BASE_URI = "http://%s:%s/tukano/rest";
-	static String HOST_NAME = IP.hostAddress();
+	// static String HOST_NAME = IP.hostAddress();
+	static String HOST_NAME = System.getenv("KUBERNETES_CLUSTER_DNS");
 	public static final int PORT = 8080;
 
 	public static String serverURI;
