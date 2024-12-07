@@ -29,7 +29,7 @@ public class JavaFileBlobs implements Blobs {
 
 	private JavaFileBlobs() {
 		storage = new FileSystemStorage();
-		baseURI = String.format("%s/", BlobStorageRestServer.blobStorage_BASE_URL);
+		baseURI = String.format("%s/", BlobStorageRestServer.BLOB_STORAGE_BASE_URL);
 	}
 	
 	@Override
