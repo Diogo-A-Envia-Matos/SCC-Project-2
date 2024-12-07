@@ -91,17 +91,17 @@ spec:
         env:
         #TODO: Replace with Kubernetes Secret (optional)
         - name: POSTGRES_USER
-          value: postgres
-          # valueFrom:
-          #   secretKeyRef:
-          #     name: postgres-secrets
-          #     key: postgres-user
+          # value: postgres
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secrets
+              key: postgres-user
         - name: POSTGRES_PASSWORD
-          value: postgres
-          # valueFrom:
-          #   secretKeyRef:
-          #     name: postgres-secrets
-          #     key: postgres-password
+          # value: postgres
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secrets
+              key: postgres-password
         - name: POSTGRES_DB
           value: tukano
         resources:
@@ -163,14 +163,14 @@ spec:
         "kubernetes.io/os": linux
       containers:
       - name: tukano-image
-        image: hemareso/tukano-server:latest
+        image: diogomatos1232/tukano-server:latest
         ports:
         - containerPort: 8080
         env:
         - name: REDIS_URL
           value: "redis-service"
-        #- name: KUBERNETES_CLUSTER_DNS
-        #  value: 74.178.104.83
+        - name: KUBERNETES_CLUSTER_DNS
+          value: 172.205.32.53
         resources:
           requests:
             cpu: 100m
@@ -340,3 +340,12 @@ spec:
   resources:
     requests:
       storage: 1Gi
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres-secrets
+type: Opaque
+stringData:
+  postgres-user: postgres
+  postgres-password: postgres

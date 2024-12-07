@@ -16,14 +16,14 @@ spec:
         "kubernetes.io/os": linux
       containers:
       - name: tukano-image
-        image: hemareso/tukano-server:latest
+        image: diogomatos1232/tukano-server:latest
         ports:
         - containerPort: 8080
         env:
         - name: REDIS_URL
           value: "redis-service"
-        #- name: KUBERNETES_CLUSTER_DNS
-        #  value: 74.178.104.83
+        - name: KUBERNETES_CLUSTER_DNS
+          value: 74.178.104.240
         resources:
           requests:
             cpu: 100m
