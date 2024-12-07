@@ -52,19 +52,21 @@ public class DBHibernate implements DB {
 	
 	
 	public <T> Result<T> getOne(String id, String partition, Class<T> clazz) {
-		// try (var jedis = RedisCache.getCachePool().getResource()) {
-		try {
-			// var cacheId = getCacheId(id, clazz);
-			// var obj = jedis.get(cacheId);
-			// if (obj != null) {
-			// 	var object = JSON.decode(obj, clazz);
-			// 	return Result.ok(object);
-			// }
+		try (var jedis = RedisCache.getCachePool().getResource()) {
+			var cacheId = getCacheId(id, clazz);
+			var obj = jedis.get(cacheId);
+
+			if (obj != null && !obj.equals("null")) {
+				var object = JSON.decode(obj, clazz);
+				return Result.ok(object);
+			}
+
 			var res = Hibernate.getInstance().getOne(id, clazz);
-			// if (res.isOK()) {
-			// 	var value = JSON.encode( res.value() );
-			// 	jedis.set(cacheId, value);
-			// }
+
+			if (res.isOK()) {
+				var value = JSON.encode( res.value() );
+				jedis.set(cacheId, value);
+			}
 			return res;
 		} catch( Exception x ) {
 			x.printStackTrace();
