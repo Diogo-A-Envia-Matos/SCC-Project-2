@@ -169,8 +169,8 @@ spec:
         env:
         - name: REDIS_URL
           value: "redis-service"
-        - name: KUBERNETES_CLUSTER_DNS
-          value: 74.178.104.83
+        #- name: KUBERNETES_CLUSTER_DNS
+        #  value: 74.178.104.83
         resources:
           requests:
             cpu: 100m
