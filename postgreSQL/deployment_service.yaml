@@ -20,19 +20,16 @@ spec:
         ports:
         - containerPort: 5432
         env:
-        #TODO: Replace with Kubernetes Secret (optional)
         - name: POSTGRES_USER
-          value: postgres
-          # valueFrom:
-          #   secretKeyRef:
-          #     name: postgres-secrets
-          #     key: postgres-user
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secrets
+              key: postgres-user
         - name: POSTGRES_PASSWORD
-          value: postgres
-          # valueFrom:
-          #   secretKeyRef:
-          #     name: postgres-secrets
-          #     key: postgres-password
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secrets
+              key: postgres-password
         - name: POSTGRES_DB
           value: tukano
         resources:
