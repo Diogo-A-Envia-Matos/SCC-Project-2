@@ -52,21 +52,22 @@ public class DBHibernate implements DB {
 	
 	
 	public <T> Result<T> getOne(String id, String partition, Class<T> clazz) {
-		try (var jedis = RedisCache.getCachePool().getResource()) {
-			var cacheId = getCacheId(id, clazz);
-			var obj = jedis.get(cacheId);
-
-			if (obj != null && !obj.equals("null")) {
-				var object = JSON.decode(obj, clazz);
-				return Result.ok(object);
-			}
+		try{
+		// try (var jedis = RedisCache.getCachePool().getResource()) {
+		// 	var cacheId = getCacheId(id, clazz);
+		// 	var obj = jedis.get(cacheId);
+		//
+		// 	if (obj != null && !obj.equals("null")) {
+		// 		var object = JSON.decode(obj, clazz);
+		// 		return Result.ok(object);
+		// 	}
 
 			var res = Hibernate.getInstance().getOne(id, clazz);
 
-			if (res.isOK()) {
-				var value = JSON.encode( res.value() );
-				jedis.set(cacheId, value);
-			}
+			// if (res.isOK()) {
+			// 	var value = JSON.encode( res.value() );
+			// 	jedis.set(cacheId, value);
+			// }
 			return res;
 		} catch( Exception x ) {
 			x.printStackTrace();
@@ -75,11 +76,12 @@ public class DBHibernate implements DB {
 	}
 	
 	public <T> Result<T> deleteOne(T obj) {
-		try (var jedis = RedisCache.getCachePool().getResource()) {
-			var id = GetId.getId(obj);
-			var clazz = obj.getClass();
-			var cacheId = getCacheId(id, clazz);
-			jedis.del(cacheId);
+		try{
+		// try (var jedis = RedisCache.getCachePool().getResource()) {
+		// 	var id = GetId.getId(obj);
+		// 	var clazz = obj.getClass();
+		// 	var cacheId = getCacheId(id, clazz);
+		// 	jedis.del(cacheId);
 
 			return Hibernate.getInstance().deleteOne(obj);
 		} catch( Exception x ) {
@@ -95,7 +97,7 @@ public class DBHibernate implements DB {
 				return List.of();
 			}
 
-		deleteCollectionFromCache(targets);
+		// deleteCollectionFromCache(targets);
 
 		return Hibernate.getInstance().deleteCollection(targets);
 		} catch( Exception x ) {
@@ -107,26 +109,27 @@ public class DBHibernate implements DB {
 	public <T> Result<T> updateOne(T obj) {
 		//Removing from cache first to guarantee that the cache will not have an outdated value
 		//(case where the update is successful on hibernate storage but not on the cache)
-		try (var jedis = RedisCache.getCachePool().getResource()) {
-			var id = GetId.getId(obj);
-			var clazz = obj.getClass();
-			var cacheId = getCacheId(id, clazz);
-			jedis.del(cacheId);
+		try {
+		// try (var jedis = RedisCache.getCachePool().getResource()) {
+		// 	var id = GetId.getId(obj);
+		// 	var clazz = obj.getClass();
+		// 	var cacheId = getCacheId(id, clazz);
+		// 	jedis.del(cacheId);
 
 			var res = Hibernate.getInstance().updateOne(obj);
 
-			if (res.isOK()) {
-				try {
-					if (clazz == User.class || clazz == Short.class) {
-						var value = JSON.encode( obj );
-						jedis.set(cacheId, value);
-					}
-				} catch (Exception e) {
-					// Update unsuccessful on cache, but successful on hibernate storage
-					e.printStackTrace();
-					return res;
-				}
-			}
+			// if (res.isOK()) {
+			// 	try {
+			// 		if (clazz == User.class || clazz == Short.class) {
+			// 			var value = JSON.encode( obj );
+			// 			jedis.set(cacheId, value);
+			// 		}
+			// 	} catch (Exception e) {
+			// 		// Update unsuccessful on cache, but successful on hibernate storage
+			// 		e.printStackTrace();
+			// 		return res;
+			// 	}
+			// }
 			return res;
 		} catch( Exception x ) {
 			x.printStackTrace();
@@ -136,28 +139,29 @@ public class DBHibernate implements DB {
 	
 	public <T> Result<T> insertOne( T obj) {
 		System.err.println("DB.insert:" + obj );
-		try (var jedis = RedisCache.getCachePool().getResource()) {
-			var id = GetId.getId(obj);
-			var clazz = obj.getClass();
-			if (clazz == User.class || clazz == Short.class) {
-				var cacheId = getCacheId(id, clazz);
-				if (jedis.exists(cacheId)) {
-					return Result.error( ErrorCode.CONFLICT );
-				}
-			}
+		try{
+		// try (var jedis = RedisCache.getCachePool().getResource()) {
+		// 	var id = GetId.getId(obj);
+		// 	var clazz = obj.getClass();
+		// 	if (clazz == User.class || clazz == Short.class) {
+		// 		var cacheId = getCacheId(id, clazz);
+		// 		if (jedis.exists(cacheId)) {
+		// 			return Result.error( ErrorCode.CONFLICT );
+		// 		}
+		// 	}
 			var res = Result.errorOrValue(Hibernate.getInstance().persistOne(obj), obj);
-			if (res.isOK()) {
-				try {
-					if (clazz == User.class || clazz == Short.class ) {
-						var cacheId = getCacheId(id, clazz);
-						var value = JSON.encode( obj );
-						jedis.set(cacheId, value);
-					}
-				} catch( Exception x ) {
-					x.printStackTrace();
-					return res;
-				}
-			}
+			// if (res.isOK()) {
+			// 	try {
+			// 		if (clazz == User.class || clazz == Short.class ) {
+			// 			var cacheId = getCacheId(id, clazz);
+			// 			var value = JSON.encode( obj );
+			// 			jedis.set(cacheId, value);
+			// 		}
+			// 	} catch( Exception x ) {
+			// 		x.printStackTrace();
+			// 		return res;
+			// 	}
+			// }
 			return res;
 		} catch( Exception x ) {
 			x.printStackTrace();
