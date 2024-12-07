@@ -61,7 +61,7 @@ public class DBHibernate implements DB {
 			}
 			var res = Hibernate.getInstance().getOne(id, clazz);
 			if (res.isOK()) {
-				var value = JSON.encode( obj );
+				var value = JSON.encode( res.value() );
 				jedis.set(cacheId, value);
 			}
 			return res;

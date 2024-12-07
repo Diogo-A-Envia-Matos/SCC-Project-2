@@ -35,8 +35,10 @@ scenarios:
   - name: 'Upload short'
     weight: 10
     flow:
-      - post:
+      - get:
           beforeRequest: "getLoginDetails"
+          url: "/users/{{ userId }}?pwd={{ pwd }}"
+      - post:
           url: "/shorts/{{ userId }}?pwd={{ pwd }}"
           afterResponse: "processVideoAddReply"
       - post:
@@ -47,6 +49,9 @@ scenarios:
   - name: "Download short"
     weight: 100
     flow:
+      - get:
+          beforeRequest: "getLoginDetails"
+          url: "/users/{{ userId }}?pwd={{ pwd }}"
       - get:
           beforeRequest: "getShortDownloadDetails"
           url: "/shorts/{{ shortId }}"

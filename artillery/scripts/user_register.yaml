@@ -31,7 +31,7 @@ scenarios:
                 email: "{{ email }}"
                 displayName: "{{ displayName }}"
         - get:
-            url: "/users/{{ userId}}?pwd={{ pwd }}"
+            url: "/users/{{ userId }}?pwd={{ pwd }}"
         - put:
             url: "/users/{{ userId }}?pwd={{ pwd }}"
             headers:
