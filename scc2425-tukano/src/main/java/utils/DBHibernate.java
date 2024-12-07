@@ -136,29 +136,28 @@ public class DBHibernate implements DB {
 	
 	public <T> Result<T> insertOne( T obj) {
 		System.err.println("DB.insert:" + obj );
-		// try (var jedis = RedisCache.getCachePool().getResource()) {
-		try {
-		// 	var id = GetId.getId(obj);
-		// 	var clazz = obj.getClass();
-		// 	if (clazz == User.class || clazz == Short.class) {
-		// 		var cacheId = getCacheId(id, clazz);
-		// 		if (jedis.exists(cacheId)) {
-		// 			return Result.error( ErrorCode.CONFLICT );
-		// 		}
-		// 	}
+		try (var jedis = RedisCache.getCachePool().getResource()) {
+			var id = GetId.getId(obj);
+			var clazz = obj.getClass();
+			if (clazz == User.class || clazz == Short.class) {
+				var cacheId = getCacheId(id, clazz);
+				if (jedis.exists(cacheId)) {
+					return Result.error( ErrorCode.CONFLICT );
+				}
+			}
 			var res = Result.errorOrValue(Hibernate.getInstance().persistOne(obj), obj);
-			// if (res.isOK()) {
-			// 	try {
-			// 		if (clazz == User.class || clazz == Short.class ) {
-			// 			var cacheId = getCacheId(id, clazz);
-			// 			var value = JSON.encode( obj );
-			// 			jedis.set(cacheId, value);
-			// 		}
-			// 	} catch( Exception x ) {
-			// 		x.printStackTrace();
-			// 		return res;
-			// 	}
-			// }
+			if (res.isOK()) {
+				try {
+					if (clazz == User.class || clazz == Short.class ) {
+						var cacheId = getCacheId(id, clazz);
+						var value = JSON.encode( obj );
+						jedis.set(cacheId, value);
+					}
+				} catch( Exception x ) {
+					x.printStackTrace();
+					return res;
+				}
+			}
 			return res;
 		} catch( Exception x ) {
 			x.printStackTrace();
